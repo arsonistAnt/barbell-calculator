@@ -19,7 +19,7 @@ interface Plates {
  *
  * @see calculateRequiredPlates
  */
-interface PlateCalcConfig {
+export interface PlateConfig {
   availablePlates: Array<Plates>;
   conv: WeightConversions;
   barbellWeight: number;
@@ -51,6 +51,9 @@ export class DefaultPlateConfig {
     new StandardPlate(25, 0),
     new StandardPlate(35, 0),
     new StandardPlate(45, 0),
+    new StandardPlate(55, 0),
+    new StandardPlate(65, 0),
+    new StandardPlate(100, 0),
   ];
   conv: WeightConversions = WeightConversions.Kilograms;
   barbellWeight: number = 45;
