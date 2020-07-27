@@ -1,7 +1,7 @@
 /**
  * An enum class to track types of weight conversions.
  */
-enum WeightConversions {
+export enum WeightConversions {
   Kilograms,
   Pounds,
 }

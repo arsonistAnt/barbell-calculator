@@ -1,10 +1,7 @@
 import React from "react";
 import { FlatList, View, StyleSheet, Text } from "react-native";
 import PlateListSeparator from "../ItemListSeparator";
-import {
-  PlateConfig,
-  DefaultPlateConfig,
-} from "../../../utils/PlateCalculation";
+import { PlateConfig, DefaultPlateConfig } from "../../utils/PlateCalculation";
 
 /**
  * A list of predifined properties for the PlateList component.

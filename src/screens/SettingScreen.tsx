@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -7,6 +8,9 @@ const SettingScreen = () => {
   return <Text>This is the SETTINGSCREEN screen.</Text>;
 =======
 import React from "react";
+=======
+import React, { useState } from "react";
+>>>>>>> Add button functionality in the setting screen
 import {
   StyleSheet,
   Text,
@@ -14,31 +18,40 @@ import {
   TouchableOpacity,
   Switch,
   View,
-  FlatList,
 } from "react-native";
-import { OptionsList, OptionItem } from "./components/optionlist/OptionList";
-import { DefaultPlateConfig } from "../utils/PlateCalculation";
-import { PlateList } from "./components/platelist/PlateList";
+import { OptionsList, OptionItem } from "../components/optionlist/OptionList";
+import {
+  DefaultPlateConfig,
+  WeightConversions,
+} from "../utils/PlateCalculation";
+import { PlateList } from "../components/platelist/PlateList";
 
 const WeightTypeConversionBtn = () => {
+  const [toggle, toggleType] = useState(false);
   return (
     <>
-      <TouchableOpacity>
-        <Text style={styles.itemText}>Lbs</Text>
+      <TouchableOpacity
+        onPress={() => toggleType(!toggle)}
+        style={{ marginRight: 4 }}
+      >
+        <Text style={styles.itemText}>{toggle ? "Kg" : "Lb"}</Text>
       </TouchableOpacity>
     </>
   );
 };
 
 const BarWeightComponentBtn = () => {
+  const [barWeight, changeBarWeight] = useState(45);
   return (
     <>
       <View style={{ flexDirection: "row" }}>
-        <Text style={[styles.optionText, { marginRight: 12 }]}>45</Text>
-        <TouchableOpacity>
+        <Text style={[styles.optionText, { marginRight: 12 }]}>
+          {barWeight}
+        </Text>
+        <TouchableOpacity onPress={() => changeBarWeight(barWeight + 1)}>
           <Text style={[styles.optionText, { color: "#f44336" }]}>Add</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => changeBarWeight(barWeight - 1)}>
           <Text style={[styles.optionText, { color: "#03a9f4" }]}>
             Subtract
           </Text>
@@ -49,10 +62,14 @@ const BarWeightComponentBtn = () => {
 };
 
 const LimitedPlatesComponentBtn = () => {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   return (
     <Switch
       trackColor={{ false: "#767577", true: "#81b0ff" }}
       ios_backgroundColor="#3e3e3e"
+      onValueChange={toggleSwitch}
+      value={isEnabled}
     />
   );
 };
