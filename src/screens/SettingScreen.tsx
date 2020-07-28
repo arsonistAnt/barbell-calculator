@@ -1,16 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
-const SettingScreen = () => {
-  return <Text>This is the SETTINGSCREEN screen.</Text>;
-=======
-import React from "react";
-=======
 import React, { useState } from "react";
->>>>>>> Add button functionality in the setting screen
 import {
   StyleSheet,
   Text,
@@ -74,7 +62,7 @@ const LimitedPlatesComponentBtn = () => {
   );
 };
 
-const SettingScreen = () => {
+const SettingScreen: React.FC = () => {
   // Create list of options for our options list.
   const optionItems: Array<OptionItem> = [
     {
@@ -94,26 +82,30 @@ const SettingScreen = () => {
     },
   ];
 
+  // By default the DefaultPlateConfig.availablePlates is sorted from least to greatest so we must check
+  // if we have to reverse the array to display the list of available plates from greatest to least.
+  const defaultPlateConfig = new DefaultPlateConfig();
+  defaultPlateConfig.availablePlates = defaultPlateConfig.availablePlates.reverse();
+
   return (
     <>
       <SafeAreaView style={styles.container}>
         <Text style={styles.itemText}>This is the setting screen</Text>
-        <View style={{ marginTop: 80 }}>
+        <View style={{ marginTop: 10 }}>
           <OptionsList optionItemList={optionItems} />
           <View style={{ marginVertical: 16 }} />
-          <PlateList plateConfiguration={new DefaultPlateConfig()} />
+          <PlateList plateConfiguration={defaultPlateConfig} />
         </View>
       </SafeAreaView>
     </>
   );
->>>>>>> Add option list and plate list component
 };
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#171717",
   },
   itemText: {
     color: "#FFFFFF",

@@ -9,7 +9,7 @@ export enum WeightConversions {
 /**
  * Interface to keep track of weighted plates and available amounts.
  */
-interface Plates {
+export interface Plates {
   type: number;
   amount: number;
 }

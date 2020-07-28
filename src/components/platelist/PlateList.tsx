@@ -1,7 +1,18 @@
-import React from "react";
-import { FlatList, View, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import PlateListSeparator from "../ItemListSeparator";
-import { PlateConfig, DefaultPlateConfig } from "../../utils/PlateCalculation";
+import {
+  PlateConfig,
+  DefaultPlateConfig,
+  Plates,
+} from "../../utils/PlateCalculation";
+import { MaterialIcons } from "@expo/vector-icons";
 
 /**
  * A list of predifined properties for the PlateList component.
@@ -16,26 +27,46 @@ type PlateListProps = {
  * @param plateConfiguration the PlateConfig that will be used to display what kind of plates are available.
  */
 export const PlateList: React.FC<PlateListProps> = ({ plateConfiguration }) => {
-  // By default the DefaultPlateConfig.availablePlates is sorted from least to greatest so we must check
-  // if we have to reverse the array to display the list of available plates from greatest to least.
-  const isDefaultPlateConfig = plateConfiguration instanceof DefaultPlateConfig;
   const { availablePlates } = plateConfiguration;
+  // Keep track of selected plates.
+  const [selectedPlates, updateSelection] = useState(new Set<Plates>());
+  const showCheckMark = (plates: Plates) => {
+    if (selectedPlates.has(plates)) {
+      return <MaterialIcons name="check" size={24} color="red" />;
+    } else {
+      return null;
+    }
+  };
+  const handleSelection = (plates: Plates) => {
+    if (selectedPlates.has(plates)) {
+      let newSet = new Set(
+        [...selectedPlates].filter((x) => x.type != plates.type)
+      );
+      updateSelection(newSet);
+    } else {
+      // remove plate from the selected set.
+      let newSet = new Set([...selectedPlates, plates]);
+      updateSelection(newSet);
+    }
+  };
 
   return (
     <>
       <FlatList
-        data={
-          isDefaultPlateConfig ? availablePlates.reverse() : availablePlates
-        }
+        data={availablePlates}
         ItemSeparatorComponent={PlateListSeparator}
         ListHeaderComponent={PlateListSeparator}
         ListFooterComponent={PlateListSeparator}
         renderItem={({ item: plate }) => {
           return (
             <>
-              <View style={styles.container}>
+              <TouchableOpacity
+                onPress={() => handleSelection(plate)}
+                style={styles.container}
+              >
                 <Text style={styles.plateText}>{plate.type} lb</Text>
-              </View>
+                {showCheckMark(plate)}
+              </TouchableOpacity>
             </>
           );
         }}
@@ -50,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingVertical: 16,
     marginHorizontal: 8,
   },
   plateText: {
