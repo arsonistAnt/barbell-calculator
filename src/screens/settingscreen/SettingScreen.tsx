@@ -7,12 +7,15 @@ import {
   Switch,
   View,
 } from "react-native";
-import { OptionsList, OptionItem } from "../components/optionlist/OptionList";
+import {
+  OptionsList,
+  OptionItem,
+} from "../../components/optionlist/OptionList";
 import {
   DefaultPlateConfig,
   WeightConversions,
-} from "../utils/PlateCalculation";
-import { PlateList } from "../components/platelist/PlateList";
+} from "../../utils/PlateCalculation";
+import { PlateList } from "../../components/platelist/PlateList";
 
 const WeightTypeConversionBtn = () => {
   const [toggle, toggleType] = useState(false);

@@ -1,9 +1,9 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MainScreen from './src/screens/MainScreen';
-import PlateInventoryScreen from './src/screens/PlateInventoryScreen';
-import SettingScreen from './src/screens/SettingScreen';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import MainScreen from "./src/screens/mainscreen/MainScreen";
+import PlateInventoryScreen from "./src/screens/plateinventoryscreen/PlateInventoryScreen";
+import SettingScreen from "./src/screens/settingscreen/SettingScreen";
 
 const BottomTabNavigator = createBottomTabNavigator();
 
@@ -21,7 +21,7 @@ function Tabs() {
         name="Main"
         component={MainScreen}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: "Home",
         }}
       />
       <BottomTabNavigator.Screen
