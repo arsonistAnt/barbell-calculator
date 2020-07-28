@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
-import Header from './shared/mainScreenHeader';
-import Body from './shared/mainScreenBody';
+import React from "react";
+import { StyleSheet, Text, View, TextInput } from "react-native";
+import Header from "./mainScreenHeader";
+import Body from "./mainScreenBody";
 
 const MainScreen = () => {
   return (
@@ -15,7 +15,7 @@ const MainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#171717',
+    backgroundColor: "#171717",
   },
 });
 
