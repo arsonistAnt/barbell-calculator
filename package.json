@@ -5,6 +5,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "postinstall": "rm -rf node_modules/expo/node_modules/react-native-safe-area-context",
     "eject": "expo eject"
   },
   "dependencies": {
