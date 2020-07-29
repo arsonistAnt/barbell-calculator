@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FlatList,
   View,
@@ -28,8 +28,17 @@ type PlateListProps = {
  */
 export const PlateList: React.FC<PlateListProps> = ({ plateConfiguration }) => {
   const { availablePlates } = plateConfiguration;
-  // Keep track of selected plates.
   const [selectedPlates, updateSelection] = useState(new Set<Plates>());
+  // TODO: Pre-checked plates should be passed as a prop.
+  // This sets the default checked plates to this list.
+  useEffect(() => {
+    const defaultSelection = availablePlates.filter((plate) =>
+      [45, 35, 25, 10, 5, 2.5].includes(plate.type)
+    );
+    updateSelection(new Set(defaultSelection));
+  }, []);
+
+  // Keep track of selected plates.
   const showCheckMark = (plates: Plates) => {
     if (selectedPlates.has(plates)) {
       return <MaterialIcons name="check" size={24} color="red" />;
