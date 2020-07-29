@@ -16,6 +16,8 @@ import {
   WeightConversions,
 } from "../../utils/PlateCalculation";
 import { PlateList } from "../../components/platelist/PlateList";
+// Import Icons
+import { Entypo } from "@expo/vector-icons";
 
 const WeightTypeConversionBtn = () => {
   const [toggle, toggleType] = useState(false);
@@ -23,9 +25,15 @@ const WeightTypeConversionBtn = () => {
     <>
       <TouchableOpacity
         onPress={() => toggleType(!toggle)}
-        style={{ marginRight: 4 }}
+        style={{ marginRight: 4, flexDirection: "row", alignItems: "center" }}
       >
         <Text style={styles.itemText}>{toggle ? "Kg" : "Lb"}</Text>
+        <Entypo
+          name="chevron-thin-right"
+          style={{ paddingLeft: 4 }}
+          size={18}
+          color="#505050"
+        />
       </TouchableOpacity>
     </>
   );
