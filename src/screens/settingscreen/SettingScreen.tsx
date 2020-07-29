@@ -39,10 +39,10 @@ const BarWeightComponentBtn = () => {
         <Text style={[styles.optionText, { marginRight: 12 }]}>
           {barWeight}
         </Text>
-        <TouchableOpacity onPress={() => changeBarWeight(barWeight + 1)}>
+        <TouchableOpacity onPress={() => changeBarWeight(barWeight + 5)}>
           <Text style={[styles.optionText, { color: "#f44336" }]}>Add</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => changeBarWeight(barWeight - 1)}>
+        <TouchableOpacity onPress={() => changeBarWeight(barWeight - 5)}>
           <Text style={[styles.optionText, { color: "#03a9f4" }]}>
             Subtract
           </Text>
