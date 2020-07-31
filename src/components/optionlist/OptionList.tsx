@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   optionItemContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignContent: "center",
     paddingVertical: 16,
     marginHorizontal: 8,
   },

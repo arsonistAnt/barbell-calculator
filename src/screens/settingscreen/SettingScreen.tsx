@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Switch,
   View,
+  TouchableHighlight,
 } from "react-native";
 import {
   OptionsList,
@@ -16,6 +17,8 @@ import {
   WeightConversions,
 } from "../../utils/PlateCalculation";
 import { PlateList } from "../../components/platelist/PlateList";
+// Import Icons
+import { Entypo } from "@expo/vector-icons";
 
 const WeightTypeConversionBtn = () => {
   const [toggle, toggleType] = useState(false);
@@ -23,30 +26,75 @@ const WeightTypeConversionBtn = () => {
     <>
       <TouchableOpacity
         onPress={() => toggleType(!toggle)}
-        style={{ marginRight: 4 }}
+        style={{ marginRight: 4, flexDirection: "row", alignItems: "center" }}
       >
         <Text style={styles.itemText}>{toggle ? "Kg" : "Lb"}</Text>
+        <Entypo
+          name="chevron-thin-right"
+          style={{ paddingLeft: 4 }}
+          size={18}
+          color="#505050"
+        />
       </TouchableOpacity>
     </>
   );
 };
 
+// TODO:- Turn this into a separate component under settingscreen folder.
 const BarWeightComponentBtn = () => {
   const [barWeight, changeBarWeight] = useState(45);
   return (
     <>
-      <View style={{ flexDirection: "row" }}>
-        <Text style={[styles.optionText, { marginRight: 12 }]}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={[styles.barWeightText, { marginRight: 12 }]}>
           {barWeight}
         </Text>
-        <TouchableOpacity onPress={() => changeBarWeight(barWeight + 5)}>
-          <Text style={[styles.optionText, { color: "#f44336" }]}>Add</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => changeBarWeight(barWeight - 5)}>
-          <Text style={[styles.optionText, { color: "#03a9f4" }]}>
-            Subtract
-          </Text>
-        </TouchableOpacity>
+        {/* TODO:- Turn this into a component */}
+        <View
+          style={{
+            borderRadius: 8,
+            backgroundColor: "#222222",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            overflow: "hidden",
+            width: 90,
+          }}
+        >
+          <TouchableHighlight
+            underlayColor="#616161"
+            activeOpacity={0.95}
+            style={{
+              borderRadius: 8,
+              flex: 1,
+              paddingVertical: 6,
+              paddingHorizontal: 12,
+            }}
+            onPress={() => changeBarWeight(barWeight - 5)}
+          >
+            <Entypo style={{}} name="minus" size={20} color="black" />
+          </TouchableHighlight>
+          <View
+            style={{
+              height: "60%",
+              width: 2,
+              backgroundColor: "#2B2B2C",
+            }}
+          />
+          <TouchableHighlight
+            underlayColor="#616161"
+            activeOpacity={0.95}
+            style={{
+              borderRadius: 8,
+              paddingVertical: 6,
+              paddingHorizontal: 12,
+              flex: 1,
+            }}
+            onPress={() => changeBarWeight(barWeight + 5)}
+          >
+            <Entypo name="plus" size={20} color="black" />
+          </TouchableHighlight>
+        </View>
       </View>
     </>
   );
@@ -125,7 +173,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginHorizontal: 8,
   },
-  optionList: {},
+  barWeightText: {
+    color: "#FFFFFF",
+    marginHorizontal: 4,
+    fontSize: 22,
+  },
 });
 
 export default SettingScreen;
