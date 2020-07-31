@@ -8,7 +8,7 @@ import { DefaultPlateConfig } from "../../utils/PlateCalculation";
 import { PlateList } from "../../components/platelist/PlateList";
 import BarWeightComponent from "./BarWeightComponent";
 import ConversionsComponent from "./ConversionsComponent";
-import LimitedPlatesComponentBtn from "./LimitedPlatesComponent";
+import LimitedPlatesComponent from "./LimitedPlatesComponent";
 
 const SettingScreen: React.FC = () => {
   // Create list of options for our options list.
@@ -26,7 +26,7 @@ const SettingScreen: React.FC = () => {
     {
       id: 3,
       optionLabel: "Limited number of plates",
-      itemComponent: LimitedPlatesComponentBtn,
+      itemComponent: LimitedPlatesComponent,
     },
   ];
 
@@ -42,7 +42,7 @@ const SettingScreen: React.FC = () => {
         <View style={{ marginTop: 10 }}>
           <OptionsList optionItemList={optionItems} />
           <View style={{ marginVertical: 16 }} />
-          <PlateList plateConfiguration={defaultPlateConfig} />
+          <PlateList plateConfiguration={defaultPlateConfig} custom={false} />
         </View>
       </SafeAreaView>
     </>

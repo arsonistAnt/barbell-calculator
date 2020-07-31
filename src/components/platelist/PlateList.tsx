@@ -7,18 +7,36 @@ import {
   TouchableOpacity,
 } from "react-native";
 import PlateListSeparator from "../ItemListSeparator";
-import {
-  PlateConfig,
-  DefaultPlateConfig,
-  Plates,
-} from "../../utils/PlateCalculation";
+import { PlateConfig, Plates } from "../../utils/PlateCalculation";
 import { MaterialIcons } from "@expo/vector-icons";
+import IncrementButton from "../../components/button/IncrementButton";
 
 /**
  * A list of predifined properties for the PlateList component.
  */
 type PlateListProps = {
   plateConfiguration: PlateConfig;
+  custom: boolean;
+};
+
+type PlateIncrementerProps = {
+  amount: number;
+};
+
+const IncrementerComponent: React.FC<PlateIncrementerProps> = ({ amount }) => {
+  const [currAmount, changeAmount] = useState(amount);
+
+  return (
+    <View style={{ flexDirection: "row" }}>
+      <Text style={[styles.plateNumberText, { marginRight: 12 }]}>
+        {currAmount}
+      </Text>
+      <IncrementButton
+        onIncrementPressed={() => changeAmount(currAmount + 1)}
+        onDecrementPressed={() => changeAmount(currAmount - 1)}
+      />
+    </View>
+  );
 };
 
 /**
@@ -26,7 +44,10 @@ type PlateListProps = {
  *
  * @param plateConfiguration the PlateConfig that will be used to display what kind of plates are available.
  */
-export const PlateList: React.FC<PlateListProps> = ({ plateConfiguration }) => {
+export const PlateList: React.FC<PlateListProps> = ({
+  plateConfiguration,
+  custom,
+}) => {
   const { availablePlates } = plateConfiguration;
   const [selectedPlates, updateSelection] = useState(new Set<Plates>());
   // TODO: Pre-checked plates should be passed as a prop.
@@ -59,6 +80,23 @@ export const PlateList: React.FC<PlateListProps> = ({ plateConfiguration }) => {
     }
   };
 
+  const DefaultPlateItem = (plate: Plates, customMode: boolean) => {
+    return (
+      <TouchableOpacity
+        onPress={() => handleSelection(plate)}
+        disabled={customMode}
+        style={styles.container}
+      >
+        <Text style={styles.plateText}>{plate.type} lb</Text>
+        {customMode ? (
+          <IncrementerComponent amount={0} />
+        ) : (
+          showCheckMark(plate)
+        )}
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <>
       <FlatList
@@ -67,17 +105,7 @@ export const PlateList: React.FC<PlateListProps> = ({ plateConfiguration }) => {
         ListHeaderComponent={PlateListSeparator}
         ListFooterComponent={PlateListSeparator}
         renderItem={({ item: plate }) => {
-          return (
-            <>
-              <TouchableOpacity
-                onPress={() => handleSelection(plate)}
-                style={styles.container}
-              >
-                <Text style={styles.plateText}>{plate.type} lb</Text>
-                {showCheckMark(plate)}
-              </TouchableOpacity>
-            </>
-          );
+          return <>{DefaultPlateItem(plate, custom)}</>;
         }}
         keyExtractor={(plate) => `${plate.type}`}
       />
@@ -94,7 +122,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   plateText: {
-    color: "#FFFFFF",
+    color: "white",
     fontSize: 20,
+  },
+  plateNumberText: {
+    color: "white",
+    fontSize: 22,
   },
 });

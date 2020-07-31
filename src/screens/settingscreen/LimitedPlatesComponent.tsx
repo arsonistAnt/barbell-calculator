@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Switch } from "react-native";
 
-const LimitedPlatesComponent = () => {
+const LimitedPlatesComponent: React.FC = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   return (

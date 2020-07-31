@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, TouchableHighlight, StyleSheet } from "react-native";
-import { Entypo } from "@expo/vector-icons";
+import { Text, View, StyleSheet } from "react-native";
 import IncrementButton from "../../components/button/IncrementButton";
 
 const BarWeightComponent: React.FC = () => {
