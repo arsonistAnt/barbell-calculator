@@ -11,9 +11,6 @@ import { PlateConfig, Plates } from "../../utils/PlateCalculation";
 import { MaterialIcons } from "@expo/vector-icons";
 import IncrementButton from "../../components/button/IncrementButton";
 
-/**
- * A list of predifined properties for the PlateList component.
- */
 type PlateListProps = {
   plateConfiguration: PlateConfig;
   custom: boolean;
@@ -23,6 +20,9 @@ type PlateIncrementerProps = {
   amount: number;
 };
 
+/**
+ * The incrementer component for the amount of plates available for each DefaultPlateItem
+ */
 const IncrementerComponent: React.FC<PlateIncrementerProps> = ({ amount }) => {
   const [currAmount, changeAmount] = useState(amount);
 
@@ -37,6 +37,20 @@ const IncrementerComponent: React.FC<PlateIncrementerProps> = ({ amount }) => {
       />
     </View>
   );
+};
+
+/**
+ * Returns a checkmark component if the plate is selected or null component if it isn't.
+ *
+ * @param plates The current plate that has been tapped on.
+ * @param selectedPlates The set of plates that have been already selected.
+ */
+const showCheckMark = (plates: Plates, selectedPlates: Set<Plates>) => {
+  if (selectedPlates.has(plates)) {
+    return <MaterialIcons name="check" size={24} color="red" />;
+  } else {
+    return null;
+  }
 };
 
 /**
@@ -57,16 +71,8 @@ export const PlateList: React.FC<PlateListProps> = ({
       [45, 35, 25, 10, 5, 2.5].includes(plate.type)
     );
     updateSelection(new Set(defaultSelection));
-  }, []);
+  }, [plateConfiguration]);
 
-  // Keep track of selected plates.
-  const showCheckMark = (plates: Plates) => {
-    if (selectedPlates.has(plates)) {
-      return <MaterialIcons name="check" size={24} color="red" />;
-    } else {
-      return null;
-    }
-  };
   const handleSelection = (plates: Plates) => {
     if (selectedPlates.has(plates)) {
       let newSet = new Set(
@@ -91,7 +97,7 @@ export const PlateList: React.FC<PlateListProps> = ({
         {customMode ? (
           <IncrementerComponent amount={0} />
         ) : (
-          showCheckMark(plate)
+          showCheckMark(plate, selectedPlates)
         )}
       </TouchableOpacity>
     );
@@ -118,6 +124,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 16,
     marginHorizontal: 8,
   },

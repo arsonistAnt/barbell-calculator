@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MainScreen from "./src/screens/mainscreen/MainScreen";
 import PlateInventoryScreen from "./src/screens/plateinventoryscreen/PlateInventoryScreen";
 import SettingScreen from "./src/screens/settingscreen/SettingScreen";
+import { SettingsProvider } from "./src/context/SettingsContext";
 
 const BottomTabNavigator = createBottomTabNavigator();
 
@@ -35,9 +36,11 @@ function Tabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Tabs />
-    </NavigationContainer>
+    <SettingsProvider>
+      <NavigationContainer>
+        <Tabs />
+      </NavigationContainer>
+    </SettingsProvider>
   );
 }
 

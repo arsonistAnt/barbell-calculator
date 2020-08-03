@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, SafeAreaView, View } from "react-native";
 import {
   OptionsList,
@@ -9,32 +9,34 @@ import { PlateList } from "../../components/platelist/PlateList";
 import BarWeightComponent from "./BarWeightComponent";
 import ConversionsComponent from "./ConversionsComponent";
 import LimitedPlatesComponent from "./LimitedPlatesComponent";
+import { Context as SettingsContext } from "../../context/SettingsContext";
+
+// Create list of options for our options list.
+const optionItems: Array<OptionItem> = [
+  {
+    id: 0,
+    optionLabel: "Unit",
+    itemComponent: ConversionsComponent,
+  },
+  {
+    id: 1,
+    optionLabel: "Bar weight",
+    itemComponent: BarWeightComponent,
+  },
+  {
+    id: 3,
+    optionLabel: "Limited number of plates",
+    itemComponent: LimitedPlatesComponent,
+  },
+];
 
 const SettingScreen: React.FC = () => {
-  // Create list of options for our options list.
-  const optionItems: Array<OptionItem> = [
-    {
-      id: 0,
-      optionLabel: "Unit",
-      itemComponent: ConversionsComponent,
-    },
-    {
-      id: 1,
-      optionLabel: "Bar weight",
-      itemComponent: BarWeightComponent,
-    },
-    {
-      id: 3,
-      optionLabel: "Limited number of plates",
-      itemComponent: LimitedPlatesComponent,
-    },
-  ];
-
   // By default the DefaultPlateConfig.availablePlates is sorted from least to greatest so we must check
   // if we have to reverse the array to display the list of available plates from greatest to least.
   const defaultPlateConfig = new DefaultPlateConfig();
   defaultPlateConfig.availablePlates = defaultPlateConfig.availablePlates.reverse();
-
+  const settingsState = useContext(SettingsContext);
+  const { state: userSettings } = settingsState;
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -42,7 +44,10 @@ const SettingScreen: React.FC = () => {
         <View style={{ marginTop: 10 }}>
           <OptionsList optionItemList={optionItems} />
           <View style={{ marginVertical: 16 }} />
-          <PlateList plateConfiguration={defaultPlateConfig} custom={false} />
+          <PlateList
+            plateConfiguration={defaultPlateConfig}
+            custom={userSettings.customMode}
+          />
         </View>
       </SafeAreaView>
     </>
