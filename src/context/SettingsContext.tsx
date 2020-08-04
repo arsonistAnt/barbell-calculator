@@ -3,6 +3,7 @@ import {
   Plate,
   DefaultPlateConfig,
   PlateConfig,
+  WeightConversions,
 } from "../utils/PlateCalculation";
 
 //TODO Store all of this in async.
@@ -22,7 +23,8 @@ type CalculationSettings = {
 type SettingAction =
   | { type: "toggle_custom_plates"; isEnabled: boolean }
   | { type: "update_checked_plates"; newSet: Set<Plate> }
-  | { type: "update_plate_amount"; newPlate: Plate };
+  | { type: "update_plate_amount"; newPlate: Plate }
+  | { type: "update_type_conversion"; conversionType: WeightConversions };
 
 /**
  * Interface that describes the types of data that will be in the settings provider.
@@ -55,11 +57,21 @@ const settingsReducer = (state: CalculationSettings, action: SettingAction) => {
         action.newPlate
       );
       return { ...state, plateConfig: newConfig };
+    case "update_type_conversion":
+      const currPlateConfig = state.plateConfig;
+      currPlateConfig.conversionType = action.conversionType;
+      return { ...state, plateConfig: currPlateConfig };
     default:
       return state;
   }
 };
 
+/**
+ * A helper function that updates PlateConfig's plate amount.
+ *
+ * @param currPlateConfig The current plate configuration that will be updated.
+ * @param newPlateState The new plate that will be used to update the available plates in the currPlateConfig
+ */
 function updateConfigPlateAmount(
   currPlateConfig: PlateConfig,
   newPlateState: Plate

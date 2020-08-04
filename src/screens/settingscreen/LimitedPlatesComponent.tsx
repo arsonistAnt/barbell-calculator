@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Context as SettingsContext } from "../../context/SettingsContext";
 import { Switch } from "react-native";
 

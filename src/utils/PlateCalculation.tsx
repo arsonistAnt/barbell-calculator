@@ -21,7 +21,7 @@ export interface Plate {
  */
 export interface PlateConfig {
   availablePlates: Array<Plate>;
-  conv: WeightConversions;
+  conversionType: WeightConversions;
   barbellWeight: number;
 }
 
@@ -55,7 +55,7 @@ export class DefaultPlateConfig {
     new StandardPlate(65, 0),
     new StandardPlate(100, 0),
   ];
-  conv: WeightConversions = WeightConversions.Pounds;
+  conversionType: WeightConversions = WeightConversions.Pounds;
   barbellWeight: number = 45;
 }
 
