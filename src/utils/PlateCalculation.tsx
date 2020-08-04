@@ -9,7 +9,7 @@ export enum WeightConversions {
 /**
  * Interface to keep track of weighted plates and available amounts.
  */
-export interface Plates {
+export interface Plate {
   type: number;
   amount: number;
 }
@@ -20,7 +20,7 @@ export interface Plates {
  * @see calculateRequiredPlates
  */
 export interface PlateConfig {
-  availablePlates: Array<Plates>;
+  availablePlates: Array<Plate>;
   conv: WeightConversions;
   barbellWeight: number;
 }
@@ -43,7 +43,7 @@ class StandardPlate {
  * @see {@link https://en.wikipedia.org/wiki/Weight_plate#:~:text=Plates%20are%20available%20in%20a,pound%20plates%20less%20commonly%20seen. | Common PLates}
  */
 export class DefaultPlateConfig {
-  availablePlates: Array<Plates> = [
+  availablePlates: Array<Plate> = [
     new StandardPlate(1.25, 0),
     new StandardPlate(2.5, 0), // This plate is considered a 2.5 plate but value is 2 for ease of calculation.
     new StandardPlate(5, 0),
@@ -55,7 +55,7 @@ export class DefaultPlateConfig {
     new StandardPlate(65, 0),
     new StandardPlate(100, 0),
   ];
-  conv: WeightConversions = WeightConversions.Kilograms;
+  conv: WeightConversions = WeightConversions.Pounds;
   barbellWeight: number = 45;
 }
 
@@ -74,14 +74,14 @@ export class DefaultPlateConfig {
  */
 const calcRequiredPlatesStandard = (
   targetWeight: number
-): { plates?: Array<Plates>; leftoverWeight: number } => {
+): { plates?: Array<Plate>; leftoverWeight: number } => {
   // Target weight must be a value > 0 or else return default {undefined, -1} object.
   if (targetWeight <= 0) {
     return { plates: undefined, leftoverWeight: -1 };
   }
 
   const { availablePlates, barbellWeight } = new DefaultPlateConfig();
-  const platesResult = Array<Plates>();
+  const platesResult = Array<Plate>();
 
   // Calculate the weight for one side of the barbell.
   // EX: 135lbs - 45lbs = 90 / 2 => 45lbs per side.
@@ -89,7 +89,7 @@ const calcRequiredPlatesStandard = (
 
   // Since we're using pop() for Array, the array will be sorted from least to greatest. [25,35,45] <== 45lb will be popped and removed.
   while (target != 0 && availablePlates.length) {
-    const currHeaviestPlate: Plates =
+    const currHeaviestPlate: Plate =
       availablePlates[availablePlates.length - 1];
     if (currHeaviestPlate.type <= target) {
       const amountNeeded = Math.trunc(target / currHeaviestPlate.type);

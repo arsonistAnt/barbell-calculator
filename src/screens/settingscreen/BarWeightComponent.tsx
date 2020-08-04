@@ -11,8 +11,8 @@ const BarWeightComponent: React.FC = () => {
           {barWeight}
         </Text>
         <IncrementButton
-          onIncrementPressed={() => changeBarWeight(barWeight - 5)}
-          onDecrementPressed={() => changeBarWeight(barWeight + 5)}
+          onIncrementPressed={() => changeBarWeight(barWeight + 5)}
+          onDecrementPressed={() => changeBarWeight(barWeight - 5)}
         />
       </View>
     </>
