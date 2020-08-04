@@ -24,7 +24,8 @@ type SettingAction =
   | { type: "toggle_custom_plates"; isEnabled: boolean }
   | { type: "update_checked_plates"; newSet: Set<Plate> }
   | { type: "update_plate_amount"; newPlate: Plate }
-  | { type: "update_type_conversion"; conversionType: WeightConversions };
+  | { type: "update_type_conversion"; conversionType: WeightConversions }
+  | { type: "update_barbell_weight"; newWeight: number };
 
 /**
  * Interface that describes the types of data that will be in the settings provider.
@@ -57,10 +58,16 @@ const settingsReducer = (state: CalculationSettings, action: SettingAction) => {
         action.newPlate
       );
       return { ...state, plateConfig: newConfig };
-    case "update_type_conversion":
+    case "update_type_conversion": {
       const currPlateConfig = state.plateConfig;
       currPlateConfig.conversionType = action.conversionType;
       return { ...state, plateConfig: currPlateConfig };
+    }
+    case "update_barbell_weight": {
+      const currPlateConfig = state.plateConfig;
+      currPlateConfig.barbellWeight = action.newWeight;
+      return { ...state, plateConfig: currPlateConfig };
+    }
     default:
       return state;
   }

@@ -9,6 +9,7 @@ const LimitedPlatesComponent: React.FC = () => {
       type: "toggle_custom_plates",
       isEnabled: !userSettings.customMode,
     });
+
   return (
     <Switch
       trackColor={{ false: "#767577", true: "#81b0ff" }}

@@ -29,10 +29,7 @@ const ConversionsComponent = () => {
 
   return (
     <>
-      <TouchableOpacity
-        onPress={() => toggleConversion()}
-        style={styles.container}
-      >
+      <TouchableOpacity onPress={toggleConversion} style={styles.container}>
         <Text style={styles.weightTypeText}>
           {getConversionTypeStr(conversionType)}
         </Text>
