@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import { StyleSheet, Text, SafeAreaView, View } from "react-native";
+import React, { useContext } from "react";
+import { StyleSheet, Text, SafeAreaView, View, Button } from "react-native";
 import {
   OptionsList,
   OptionItem,
@@ -33,20 +33,26 @@ const optionItems: Array<OptionItem> = [
 const SettingScreen: React.FC = () => {
   const settingsState = useContext(SettingsContext);
   const { state: userSettings, dispatch } = settingsState;
-
   return (
     <>
       <SafeAreaView style={styles.container}>
         <Text style={styles.itemText}>This is the setting screen</Text>
+        <Button
+          title="SAVE"
+          onPress={() => dispatch({ type: "save_user_settings" })}
+        />
         <View style={{ marginTop: 10 }}>
           <OptionsList optionItemList={optionItems} />
           <View style={{ marginVertical: 16 }} />
           <PlateList
             plateConfiguration={userSettings.plateConfig}
             custom={userSettings.customMode}
-            currentSelection={userSettings.checkedPlates}
-            onUpdateCurrentSelection={(plates: Set<Plate>) => {
-              dispatch({ type: "update_checked_plates", newSet: plates });
+            currentSelection={userSettings.checkedPlateTypes}
+            onUpdateCurrentSelection={(availableTypes: Set<number>) => {
+              dispatch({
+                type: "update_checked_plates",
+                newTypeSet: availableTypes,
+              });
             }}
             onIncrementUpdate={(plate: Plate, amount: number) => {
               plate.amount = amount;

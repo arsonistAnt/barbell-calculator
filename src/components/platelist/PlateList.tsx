@@ -14,8 +14,8 @@ import IncrementButton from "../../components/button/IncrementButton";
 // Prop-Type enforcement for the components in this module.
 type PlateListProps = {
   plateConfiguration: PlateConfig;
-  currentSelection: Set<Plate>;
-  onUpdateCurrentSelection?: (selection: Set<Plate>) => void;
+  currentSelection: Set<number>;
+  onUpdateCurrentSelection?: (selection: Set<number>) => void;
   onIncrementUpdate?: (plate: Plate, newAmount: number) => void;
   custom: boolean;
 };
@@ -49,11 +49,11 @@ const PlateIncrementerComponent: React.FC<PlateIncrementerProps> = ({
 /**
  * Returns a checkmark component if the plate is selected or null component if it isn't.
  *
- * @param plates The current plate that has been tapped on.
+ * @param plate The current plate that has been tapped on.
  * @param selectedPlates The set of plates that have been already selected.
  */
-const showCheckMark = (plates: Plate, selectedPlates: Set<Plate>) => {
-  if (selectedPlates.has(plates)) {
+const showCheckMark = (plate: Plate, selectedPlates: Set<number>) => {
+  if (selectedPlates.has(plate.type)) {
     return <MaterialIcons name="check" size={24} color="red" />;
   } else {
     return null;
@@ -63,23 +63,23 @@ const showCheckMark = (plates: Plate, selectedPlates: Set<Plate>) => {
 /**
  * Handles removing plates from the current selection set.
  *
- * @param plates The plate that has been tapped on.
+ * @param plate The plate that has been tapped on.
  * @param selectedPlates The set currently selected plates.
  * @param action A callback function for when the selection set has changed.
  */
 const handleSelection = (
-  plates: Plate,
-  selectedPlates: Set<Plate>,
-  action?: (plate: Set<Plate>) => void
+  plate: Plate,
+  selectedPlates: Set<number>,
+  action?: (plate: Set<number>) => void
 ) => {
-  if (selectedPlates.has(plates)) {
+  if (selectedPlates.has(plate.type)) {
     let newSet = new Set(
-      [...selectedPlates].filter((x) => x.type != plates.type)
+      [...selectedPlates].filter((plateType) => plateType != plate.type)
     );
     action?.(newSet);
   } else {
     // remove plate from the selected set.
-    let newSet = new Set([...selectedPlates, plates]);
+    let newSet = new Set([...selectedPlates, plate.type]);
     action?.(newSet);
   }
 };
