@@ -1,18 +1,32 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import IncrementButton from "../../components/button/IncrementButton";
+import { Context as SettingsContext } from "../../context/SettingsContext";
 
 const BarWeightComponent: React.FC = () => {
-  const [barWeight, changeBarWeight] = useState(45);
+  const settingsState = useContext(SettingsContext);
+  const { state: userSettings, dispatch } = settingsState;
+  const currBarWeight = userSettings.plateConfig.barbellWeight;
+
   return (
     <>
       <View style={{ flexDirection: "row" }}>
         <Text style={[styles.barWeightText, { marginRight: 12 }]}>
-          {barWeight}
+          {currBarWeight}
         </Text>
         <IncrementButton
-          onIncrementPressed={() => changeBarWeight(barWeight - 5)}
-          onDecrementPressed={() => changeBarWeight(barWeight + 5)}
+          onIncrementPressed={() =>
+            dispatch({
+              type: "update_barbell_weight",
+              newWeight: currBarWeight + 5,
+            })
+          }
+          onDecrementPressed={() =>
+            dispatch({
+              type: "update_barbell_weight",
+              newWeight: currBarWeight - 5,
+            })
+          }
         />
       </View>
     </>

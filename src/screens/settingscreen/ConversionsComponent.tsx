@@ -1,16 +1,38 @@
-import React, { useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
+import { Context as SettingsContext } from "../../context/SettingsContext";
+import { WeightConversions, PlateConfig } from "../../utils/PlateCalculation";
 
 const ConversionsComponent = () => {
-  const [toggle, toggleType] = useState(false);
+  const { state: userSettings, dispatch } = useContext(SettingsContext);
+  const { conversionType } = userSettings.plateConfig;
+
+  const getConversionTypeStr = (type: WeightConversions) => {
+    switch (type) {
+      case WeightConversions.Kilograms:
+        return "Kg";
+      default:
+        return "Lb";
+    }
+  };
+
+  const toggleConversion = () => {
+    let newConvType = WeightConversions.Pounds;
+    if (conversionType == WeightConversions.Kilograms) {
+      newConvType = WeightConversions.Pounds;
+    } else {
+      newConvType = WeightConversions.Kilograms;
+    }
+    dispatch({ type: "update_type_conversion", conversionType: newConvType });
+  };
+
   return (
     <>
-      <TouchableOpacity
-        onPress={() => toggleType(!toggle)}
-        style={styles.container}
-      >
-        <Text style={styles.weightTypeText}>{toggle ? "Kg" : "Lb"}</Text>
+      <TouchableOpacity onPress={toggleConversion} style={styles.container}>
+        <Text style={styles.weightTypeText}>
+          {getConversionTypeStr(conversionType)}
+        </Text>
         <Entypo
           name="chevron-thin-right"
           style={{ paddingLeft: 4 }}

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Context as SettingsContext } from "../../context/SettingsContext";
 import { Switch } from "react-native";
 
@@ -9,6 +9,7 @@ const LimitedPlatesComponent: React.FC = () => {
       type: "toggle_custom_plates",
       isEnabled: !userSettings.customMode,
     });
+
   return (
     <Switch
       trackColor={{ false: "#767577", true: "#81b0ff" }}

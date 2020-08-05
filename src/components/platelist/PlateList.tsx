@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   View,
@@ -7,33 +7,40 @@ import {
   TouchableOpacity,
 } from "react-native";
 import PlateListSeparator from "../ItemListSeparator";
-import { PlateConfig, Plates } from "../../utils/PlateCalculation";
+import { PlateConfig, Plate } from "../../utils/PlateCalculation";
 import { MaterialIcons } from "@expo/vector-icons";
 import IncrementButton from "../../components/button/IncrementButton";
 
+// Prop-Type enforcement for the components in this module.
 type PlateListProps = {
   plateConfiguration: PlateConfig;
+  currentSelection: Set<number>;
+  onUpdateCurrentSelection?: (selection: Set<number>) => void;
+  onIncrementUpdate?: (plate: Plate, newAmount: number) => void;
   custom: boolean;
 };
 
 type PlateIncrementerProps = {
-  amount: number;
+  plate: Plate;
+  onAmountUpdate?: (plate: Plate, newAmount: number) => void;
 };
+// Prop-Type enforcement for the components in this module.
 
 /**
- * The incrementer component for the amount of plates available for each DefaultPlateItem
+ * The incrementer component for the amount of plates available for each PlateItem
  */
-const IncrementerComponent: React.FC<PlateIncrementerProps> = ({ amount }) => {
-  const [currAmount, changeAmount] = useState(amount);
-
+const PlateIncrementerComponent: React.FC<PlateIncrementerProps> = ({
+  plate,
+  onAmountUpdate,
+}) => {
   return (
     <View style={{ flexDirection: "row" }}>
       <Text style={[styles.plateNumberText, { marginRight: 12 }]}>
-        {currAmount}
+        {plate.amount}
       </Text>
       <IncrementButton
-        onIncrementPressed={() => changeAmount(currAmount + 1)}
-        onDecrementPressed={() => changeAmount(currAmount - 1)}
+        onIncrementPressed={() => onAmountUpdate?.(plate, plate.amount + 1)}
+        onDecrementPressed={() => onAmountUpdate?.(plate, plate.amount - 1)}
       />
     </View>
   );
@@ -42,11 +49,11 @@ const IncrementerComponent: React.FC<PlateIncrementerProps> = ({ amount }) => {
 /**
  * Returns a checkmark component if the plate is selected or null component if it isn't.
  *
- * @param plates The current plate that has been tapped on.
+ * @param plate The current plate that has been tapped on.
  * @param selectedPlates The set of plates that have been already selected.
  */
-const showCheckMark = (plates: Plates, selectedPlates: Set<Plates>) => {
-  if (selectedPlates.has(plates)) {
+const showCheckMark = (plate: Plate, selectedPlates: Set<number>) => {
+  if (selectedPlates.has(plate.type)) {
     return <MaterialIcons name="check" size={24} color="red" />;
   } else {
     return null;
@@ -54,50 +61,60 @@ const showCheckMark = (plates: Plates, selectedPlates: Set<Plates>) => {
 };
 
 /**
- * Display weighted plates in a list.
+ * Handles removing plates from the current selection set.
+ *
+ * @param plate The plate that has been tapped on.
+ * @param selectedPlates The set currently selected plates.
+ * @param action A callback function for when the selection set has changed.
+ */
+const handleSelection = (
+  plate: Plate,
+  selectedPlates: Set<number>,
+  action?: (plate: Set<number>) => void
+) => {
+  if (selectedPlates.has(plate.type)) {
+    let newSet = new Set(
+      [...selectedPlates].filter((plateType) => plateType != plate.type)
+    );
+    action?.(newSet);
+  } else {
+    // remove plate from the selected set.
+    let newSet = new Set([...selectedPlates, plate.type]);
+    action?.(newSet);
+  }
+};
+
+/**
+ * Display weighted plates in a list, handles components like plate selection and plate amounts.
  *
  * @param plateConfiguration the PlateConfig that will be used to display what kind of plates are available.
  */
 export const PlateList: React.FC<PlateListProps> = ({
+  currentSelection,
   plateConfiguration,
+  onUpdateCurrentSelection,
+  onIncrementUpdate,
   custom,
 }) => {
   const { availablePlates } = plateConfiguration;
-  const [selectedPlates, updateSelection] = useState(new Set<Plates>());
-  // TODO: Pre-checked plates should be passed as a prop.
-  // This sets the default checked plates to this list.
-  useEffect(() => {
-    const defaultSelection = availablePlates.filter((plate) =>
-      [45, 35, 25, 10, 5, 2.5].includes(plate.type)
-    );
-    updateSelection(new Set(defaultSelection));
-  }, [plateConfiguration]);
 
-  const handleSelection = (plates: Plates) => {
-    if (selectedPlates.has(plates)) {
-      let newSet = new Set(
-        [...selectedPlates].filter((x) => x.type != plates.type)
-      );
-      updateSelection(newSet);
-    } else {
-      // remove plate from the selected set.
-      let newSet = new Set([...selectedPlates, plates]);
-      updateSelection(newSet);
-    }
-  };
-
-  const DefaultPlateItem = (plate: Plates, customMode: boolean) => {
+  const PlateItem = (plate: Plate, customMode: boolean) => {
     return (
       <TouchableOpacity
-        onPress={() => handleSelection(plate)}
+        onPress={() =>
+          handleSelection(plate, currentSelection, onUpdateCurrentSelection)
+        }
         disabled={customMode}
         style={styles.container}
       >
         <Text style={styles.plateText}>{plate.type} lb</Text>
         {customMode ? (
-          <IncrementerComponent amount={0} />
+          <PlateIncrementerComponent
+            plate={plate}
+            onAmountUpdate={onIncrementUpdate}
+          />
         ) : (
-          showCheckMark(plate, selectedPlates)
+          showCheckMark(plate, currentSelection)
         )}
       </TouchableOpacity>
     );
@@ -106,12 +123,12 @@ export const PlateList: React.FC<PlateListProps> = ({
   return (
     <>
       <FlatList
-        data={availablePlates}
+        data={availablePlates.sort((a, b) => b.type - a.type)}
         ItemSeparatorComponent={PlateListSeparator}
         ListHeaderComponent={PlateListSeparator}
         ListFooterComponent={PlateListSeparator}
         renderItem={({ item: plate }) => {
-          return <>{DefaultPlateItem(plate, custom)}</>;
+          return <>{PlateItem(plate, custom)}</>;
         }}
         keyExtractor={(plate) => `${plate.type}`}
       />
@@ -119,7 +136,6 @@ export const PlateList: React.FC<PlateListProps> = ({
   );
 };
 
-// Style objects for the plate list function component.
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",

@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, SafeAreaView, View } from "react-native";
+import { StyleSheet, Text, SafeAreaView, View, Button } from "react-native";
 import {
   OptionsList,
   OptionItem,
 } from "../../components/optionlist/OptionList";
-import { DefaultPlateConfig } from "../../utils/PlateCalculation";
+import { Plate } from "../../utils/PlateCalculation";
 import { PlateList } from "../../components/platelist/PlateList";
 import BarWeightComponent from "./BarWeightComponent";
 import ConversionsComponent from "./ConversionsComponent";
@@ -31,22 +31,33 @@ const optionItems: Array<OptionItem> = [
 ];
 
 const SettingScreen: React.FC = () => {
-  // By default the DefaultPlateConfig.availablePlates is sorted from least to greatest so we must check
-  // if we have to reverse the array to display the list of available plates from greatest to least.
-  const defaultPlateConfig = new DefaultPlateConfig();
-  defaultPlateConfig.availablePlates = defaultPlateConfig.availablePlates.reverse();
   const settingsState = useContext(SettingsContext);
-  const { state: userSettings } = settingsState;
+  const { state: userSettings, dispatch } = settingsState;
   return (
     <>
       <SafeAreaView style={styles.container}>
         <Text style={styles.itemText}>This is the setting screen</Text>
+        <Button
+          title="SAVE"
+          onPress={() => dispatch({ type: "save_user_settings" })}
+        />
         <View style={{ marginTop: 10 }}>
           <OptionsList optionItemList={optionItems} />
           <View style={{ marginVertical: 16 }} />
           <PlateList
-            plateConfiguration={defaultPlateConfig}
+            plateConfiguration={userSettings.plateConfig}
             custom={userSettings.customMode}
+            currentSelection={userSettings.checkedPlateTypes}
+            onUpdateCurrentSelection={(availableTypes: Set<number>) => {
+              dispatch({
+                type: "update_checked_plates",
+                newTypeSet: availableTypes,
+              });
+            }}
+            onIncrementUpdate={(plate: Plate, amount: number) => {
+              plate.amount = amount;
+              dispatch({ type: "update_plate_amount", newPlate: plate });
+            }}
           />
         </View>
       </SafeAreaView>
