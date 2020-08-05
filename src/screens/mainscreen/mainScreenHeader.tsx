@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+const Header = ({ handleChangeWeight, weight }) => {
+  const [text, setText] = useState('');
 
-const Header = () => {
-  const [weight, setWeight] = useState('');
+  const validations = (text: string) => {
+    //let onSubmitRegExpression = /^[0-9]+(\.[0-9]{1,1})?$/gim; all numbers no decimals
+    let numRegExpression = /^(\d*(\.\d{0,2})?|\.?\d{1,2})$/gim; // 2 decimal places and numbers
 
-  //FIXME:- Convert to Num for Anthony's algo & fix decimal to precision of 1. Also refactor.
-  // Use this? https://github.com/wwdrew/react-native-numeric-textinput
-  const validations = (value: String) => {
-    let numRegExpression = /[`a-zA-Z- #*;,<>\{\}\[\]\\\/]/gi;
-    setWeight(value.replace(numRegExpression, ''));
+    if (numRegExpression.test(text)) {
+      setText(text);
+    }
   };
 
   return (
@@ -16,18 +17,21 @@ const Header = () => {
       <View>
         <Text style={styles.targetText}>Target Weight</Text>
         <TextInput
+          returnKeyLabel="Done"
+          returnKeyType="done"
           keyboardType="decimal-pad"
           style={styles.weightText}
           maxLength={7}
-          onChangeText={(value) => validations(value)}
-          value={weight}
+          onChangeText={(text) => validations(text)}
+          value={text}
+          placeholder="135.0"
+          onSubmitEditing={(value) => handleChangeWeight(value)}
         ></TextInput>
       </View>
     </View>
   );
 };
 
-//FIXME:- finalize styles, this will do for now
 const styles = StyleSheet.create({
   container: {
     width: '100%',
