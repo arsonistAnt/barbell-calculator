@@ -1,19 +1,50 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 
-const Body = () => {
+const Body = ({ calculatedPlates }) => {
+  const isLeftoverWeight = () => {
+    if (
+      calculatedPlates.leftoverWeight < 0 ||
+      isNaN(calculatedPlates.leftoverWeight)
+    ) {
+      return false;
+    } else if (calculatedPlates.leftoverWeight >= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.weightText}>1 x 45 => 45LB</Text>
-      <Text style={styles.weightText}>2 x 10 => 20LB</Text>
-      <Text style={styles.weightText}>3 x 25 => 75LB</Text>
+      <Text style={styles.weightText}>
+        {calculatedPlates.plates === undefined ? (
+          <Text></Text>
+        ) : (
+          calculatedPlates.plates.map((item, index) => (
+            <Text key={index}>
+              {item.amount +
+                ' x ' +
+                item.type +
+                ' => ' +
+                item.amount * item.type +
+                'LB\n'}
+            </Text>
+          ))
+        )}
+      </Text>
 
-      <Text style={styles.remainingText}>Remaining: 1.131</Text>
+      {!isLeftoverWeight() ? (
+        <Text style={styles.remainingText}>Not Rackable</Text>
+      ) : (
+        <Text style={styles.remainingText}>
+          Remaining: {calculatedPlates.leftoverWeight}
+        </Text>
+      )}
     </View>
   );
 };
 
-//FIXME:- finalize styles, this will do for now
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
