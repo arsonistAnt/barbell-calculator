@@ -1,7 +1,7 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import AsynStorage from "@react-native-community/async-storage";
 import StorageKeys, { setToJsonReplacer } from "../utils/StorageKeys";
-import PlateCalculation, {
+import {
   Plate,
   DefaultPlateConfig,
   PlateConfig,
