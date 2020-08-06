@@ -4,7 +4,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainScreen from "./src/screens/mainscreen/MainScreen";
 import SettingScreen from "./src/screens/settingscreen/SettingScreen";
-import PlateInventoryScreen from "./src/screens/plateinventoryscreen/PlateInventoryScreen";
 
 import { SettingsProvider } from "./src/context/SettingsContext";
 import { AntDesign } from "@expo/vector-icons";

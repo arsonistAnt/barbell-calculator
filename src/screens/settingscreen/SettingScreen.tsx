@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
-import { StyleSheet, Text, SafeAreaView, View, Button } from "react-native";
+import React, { useContext, useEffect } from "react";
+import { StyleSheet, SafeAreaView, View } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import {
   OptionsList,
   OptionItem,
@@ -10,6 +11,10 @@ import BarWeightComponent from "./barWeightComponent";
 import ConversionsComponent from "./conversionsComponent";
 import LimitedPlatesComponent from "./limitedPlatesComponent";
 import { Context as SettingsContext } from "../../context/SettingsContext";
+
+type Props = {
+  navigation: StackNavigationProp<any, any>;
+};
 
 // Create list of options for our options list.
 const optionItems: Array<OptionItem> = [
@@ -30,9 +35,34 @@ const optionItems: Array<OptionItem> = [
   },
 ];
 
-const SettingScreen: React.FC = () => {
+/**
+ * Automatically save the calculation settings when navigating away from the settings screen.
+ *
+ * @param navigation the navigation prop to hook listeners into.
+ * @param action the callback for when the setting screen is blurred.
+ */
+const setupAutoSave = (
+  navigation: StackNavigationProp<any, any>,
+  action?: () => void
+) => {
+  // Save settings when navigating away from settings screen.
+  useEffect(() => {
+    const unsubscribeListener: any = navigation.addListener("blur", () => {
+      console.log("BYE SCREEN!");
+      action?.();
+      return unsubscribeListener;
+    });
+    return;
+  }, []);
+};
+
+const SettingScreen: React.FC<Props> = ({ navigation }) => {
   const settingsState = useContext(SettingsContext);
   const { state: userSettings, dispatch } = settingsState;
+  setupAutoSave(navigation, () => {
+    dispatch({ type: "save_user_settings" });
+  });
+
   return (
     <>
       <SafeAreaView style={styles.container}>
