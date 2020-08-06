@@ -1,31 +1,31 @@
-import React, { useContext } from 'react';
-import { StyleSheet, Text, SafeAreaView, View, Button } from 'react-native';
+import React, { useContext } from "react";
+import { StyleSheet, Text, SafeAreaView, View, Button } from "react-native";
 import {
   OptionsList,
   OptionItem,
-} from '../../components/optionlist/OptionList';
-import { Plate } from '../../utils/PlateCalculation';
-import { PlateList } from '../../components/platelist/PlateList';
-import BarWeightComponent from './BarWeightComponent';
-import ConversionsComponent from './ConversionsComponent';
-import LimitedPlatesComponent from './LimitedPlatesComponent';
-import { Context as SettingsContext } from '../../context/SettingsContext';
+} from "../../components/optionlist/OptionList";
+import { Plate } from "../../utils/PlateCalculation";
+import { PlateList } from "../../components/platelist/PlateList";
+import BarWeightComponent from "./barWeightComponent";
+import ConversionsComponent from "./conversionsComponent";
+import LimitedPlatesComponent from "./limitedPlatesComponent";
+import { Context as SettingsContext } from "../../context/SettingsContext";
 
 // Create list of options for our options list.
 const optionItems: Array<OptionItem> = [
   {
     id: 0,
-    optionLabel: 'Unit',
+    optionLabel: "Unit",
     itemComponent: ConversionsComponent,
   },
   {
     id: 1,
-    optionLabel: 'Bar weight',
+    optionLabel: "Bar weight",
     itemComponent: BarWeightComponent,
   },
   {
     id: 3,
-    optionLabel: 'Limited number of plates',
+    optionLabel: "Limited number of plates",
     itemComponent: LimitedPlatesComponent,
   },
 ];
@@ -36,11 +36,6 @@ const SettingScreen: React.FC = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <Text style={styles.itemText}>This is the setting screen</Text>
-        <Button
-          title="SAVE"
-          onPress={() => dispatch({ type: 'save_user_settings' })}
-        />
         <View style={{ marginTop: 10 }}>
           <OptionsList optionItemList={optionItems} />
           <View style={{ marginVertical: 16 }} />
@@ -50,13 +45,13 @@ const SettingScreen: React.FC = () => {
             currentSelection={userSettings.checkedPlateTypes}
             onUpdateCurrentSelection={(availableTypes: Set<number>) => {
               dispatch({
-                type: 'update_checked_plates',
+                type: "update_checked_plates",
                 newTypeSet: availableTypes,
               });
             }}
             onIncrementUpdate={(plate: Plate, amount: number) => {
               plate.amount = amount;
-              dispatch({ type: 'update_plate_amount', newPlate: plate });
+              dispatch({ type: "update_plate_amount", newPlate: plate });
             }}
           />
         </View>
@@ -67,12 +62,12 @@ const SettingScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
+    flexDirection: "column",
     flex: 1,
-    backgroundColor: '#171717',
+    backgroundColor: "#171717",
   },
   itemText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 20,
   },
 });

@@ -1,13 +1,13 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import MainScreen from './src/screens/mainscreen/MainScreen';
-import SettingScreen from './src/screens/settingscreen/SettingScreen';
-import PlateInventoryScreen from './src/screens/plateinventoryscreen/PlateInventoryScreen';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import MainScreen from "./src/screens/mainscreen/MainScreen";
+import SettingScreen from "./src/screens/settingscreen/SettingScreen";
+import PlateInventoryScreen from "./src/screens/plateinventoryscreen/PlateInventoryScreen";
 
-import { SettingsProvider } from './src/context/SettingsContext';
-import { AntDesign } from '@expo/vector-icons';
+import { SettingsProvider } from "./src/context/SettingsContext";
+import { AntDesign } from "@expo/vector-icons";
 
 const BottomTabNavigator = createBottomTabNavigator();
 
@@ -21,9 +21,9 @@ function SettingsStackScreen() {
         component={SettingScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#CC2B25',
+            backgroundColor: "#CC2B25",
           },
-          headerTintColor: 'white',
+          headerTintColor: "white",
         }}
       />
     </SettingsStack.Navigator>
@@ -37,15 +37,15 @@ function Tabs() {
         tabBarOptions={{
           keyboardHidesTabBar: true,
           showLabel: false,
-          style: { backgroundColor: 'rgba(0, 0, 0, 1)' },
-          activeTintColor: '#CC2B25',
+          style: { backgroundColor: "rgba(0, 0, 0, 1)" },
+          activeTintColor: "#CC2B25",
         }}
       >
         <BottomTabNavigator.Screen
           name="home"
           component={MainScreen}
           options={{
-            tabBarLabel: 'Home',
+            tabBarLabel: "Home",
             tabBarIcon: ({ size, color }) => {
               return <AntDesign name="home" size={size} color={color} />;
             },
