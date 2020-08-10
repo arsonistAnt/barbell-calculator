@@ -1,16 +1,16 @@
-import React, { useContext, useEffect } from "react";
-import { StyleSheet, SafeAreaView, View } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import {
   OptionsList,
   OptionItem,
-} from "../../components/optionlist/OptionList";
-import { Plate } from "../../utils/PlateCalculation";
-import { PlateList } from "../../components/platelist/PlateList";
-import BarWeightComponent from "./barWeightComponent";
-import ConversionsComponent from "./conversionsComponent";
-import LimitedPlatesComponent from "./limitedPlatesComponent";
-import { Context as SettingsContext } from "../../context/SettingsContext";
+} from '../../components/optionlist/OptionList';
+import { Plate } from '../../utils/PlateCalculation';
+import { PlateList } from '../../components/platelist/PlateList';
+import BarWeightComponent from './BarWeightComponent';
+import ConversionsComponent from './ConversionsComponent';
+import LimitedPlatesComponent from './LimitedPlatesComponent';
+import { Context as SettingsContext } from '../../context/SettingsContext';
 
 type Props = {
   navigation: StackNavigationProp<any, any>;
@@ -20,17 +20,17 @@ type Props = {
 const optionItems: Array<OptionItem> = [
   {
     id: 0,
-    optionLabel: "Unit",
+    optionLabel: 'Unit',
     itemComponent: ConversionsComponent,
   },
   {
     id: 1,
-    optionLabel: "Bar weight",
+    optionLabel: 'Bar weight',
     itemComponent: BarWeightComponent,
   },
   {
     id: 3,
-    optionLabel: "Limited number of plates",
+    optionLabel: 'Limited number of plates',
     itemComponent: LimitedPlatesComponent,
   },
 ];
@@ -47,8 +47,8 @@ const setupAutoSave = (
 ) => {
   // Save settings when navigating away from settings screen.
   useEffect(() => {
-    const unsubscribeListener: any = navigation.addListener("blur", () => {
-      console.log("BYE SCREEN!");
+    const unsubscribeListener: any = navigation.addListener('blur', () => {
+      console.log('BYE SCREEN!');
       action?.();
       return unsubscribeListener;
     });
@@ -60,7 +60,7 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
   const settingsState = useContext(SettingsContext);
   const { state: userSettings, dispatch } = settingsState;
   setupAutoSave(navigation, () => {
-    dispatch({ type: "save_user_settings" });
+    dispatch({ type: 'save_user_settings' });
   });
 
   return (
@@ -75,13 +75,13 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
             currentSelection={userSettings.checkedPlateTypes}
             onUpdateCurrentSelection={(availableTypes: Set<number>) => {
               dispatch({
-                type: "update_checked_plates",
+                type: 'update_checked_plates',
                 newTypeSet: availableTypes,
               });
             }}
             onIncrementUpdate={(plate: Plate, amount: number) => {
               plate.amount = amount;
-              dispatch({ type: "update_plate_amount", newPlate: plate });
+              dispatch({ type: 'update_plate_amount', newPlate: plate });
             }}
           />
         </View>
@@ -92,12 +92,12 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
+    flexDirection: 'column',
     flex: 1,
-    backgroundColor: "#171717",
+    backgroundColor: '#171717',
   },
   itemText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 20,
   },
 });

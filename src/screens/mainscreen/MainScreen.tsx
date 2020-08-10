@@ -22,8 +22,8 @@ const MainScreen = () => {
 
   let plates = PlateCalculation.calculateRequiredPlates(weight);
 
-  const handleChangeWeight = (e) => {
-    setWeight(e.nativeEvent.text); // is this right?
+  const handleChangeWeight = (currWeight: number) => {
+    setWeight(currWeight);
   };
 
   return (
