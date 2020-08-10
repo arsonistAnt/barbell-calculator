@@ -4,6 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import {
   OptionsList,
   OptionItem,
+<<<<<<< HEAD
 } from "../../components/optionlist/OptionList";
 import { Plate } from "../../utils/PlateCalculation";
 import { PlateList } from "../../components/platelist/PlateList";
@@ -15,6 +16,16 @@ import { Context as SettingsContext } from "../../context/SettingsContext";
 type Props = {
   navigation: StackNavigationProp<any, any>;
 };
+=======
+} from '../../components/optionlist/OptionList';
+import { Plate } from '../../utils/PlateCalculation';
+import { PlateList } from '../../components/platelist/PlateList';
+import BarWeightComponent from './BarWeightComponent';
+import ConversionsComponent from './ConversionsComponent';
+import LimitedPlatesComponent from './LimitedPlatesComponent';
+import { Context as SettingsContext } from '../../context/SettingsContext';
+import { ScrollView, FlatList } from 'react-native-gesture-handler';
+>>>>>>> f13f122... Fix cursor placement issue on Android
 
 // Create list of options for our options list.
 const optionItems: Array<OptionItem> = [

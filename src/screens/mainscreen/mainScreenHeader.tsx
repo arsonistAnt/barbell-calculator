@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-const Header = ({ handleChangeWeight, weight }) => {
+
+type Props = {
+  handleChangeWeight: (currWeight: number) => void;
+  weight: number;
+};
+
+const Header: FunctionComponent<Props> = ({
+  handleChangeWeight,
+  weight: number,
+}) => {
   const [text, setText] = useState('');
+  // const [selection, setSelection] = useState({ start: 0, end: 0 });
 
   const validations = (text: string) => {
     //let onSubmitRegExpression = /^[0-9]+(\.[0-9]{1,1})?$/gim; all numbers no decimals
@@ -17,6 +27,16 @@ const Header = ({ handleChangeWeight, weight }) => {
       <View>
         <Text style={styles.targetText}>Target Weight</Text>
         <TextInput
+          // selection={selection}
+          // multiline={true}
+          // onSelectionChange={(event) => {
+          //   const {
+          //     nativeEvent: {
+          //       selection: { start, end },
+          //     },
+          //   } = event;
+          //   setSelection({ start, end });
+          // }}
           returnKeyLabel="Done"
           returnKeyType="done"
           keyboardType="decimal-pad"
@@ -25,7 +45,10 @@ const Header = ({ handleChangeWeight, weight }) => {
           onChangeText={(text) => validations(text)}
           value={text}
           placeholder="135.0"
-          onSubmitEditing={(value) => handleChangeWeight(value)}
+          onSubmitEditing={(submitEvent) => {
+            let targetWeight: number = parseFloat(submitEvent.nativeEvent.text);
+            handleChangeWeight(targetWeight);
+          }}
         ></TextInput>
       </View>
     </View>
@@ -47,7 +70,7 @@ const styles = StyleSheet.create({
   weightText: {
     fontSize: 30,
     color: 'white',
-    textAlign: 'center',
+    alignSelf: 'center',
     paddingTop: 10,
   },
 });
