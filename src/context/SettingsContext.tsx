@@ -11,7 +11,7 @@ import {
 /**
  * Type restriction that contains all calculation settings for the barbell calculator.
  */
-interface CalculationSettings {
+export interface CalculationSettings {
   // Boolean to check if custom plate numbers should be used.
   customMode: boolean;
   plateConfig: DefaultPlateConfig;

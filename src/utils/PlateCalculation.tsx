@@ -60,34 +60,39 @@ export class DefaultPlateConfig {
 }
 
 /**
- * The default calculation for the list of plates needed, this calculation assumes that the standard weights
- * in {@link DefaultPlateConfig} is what the users may have.
+ * Calculates the list of plates needed to hit the target weight using the a greedy method.
  *
- * Efficient method: Use the heaviest to the lightest weight to calculate the list of plates needed.
+ * Greedy Efficient method: Use the heaviest to the lightest weight to calculate the list of plates needed.
  *
  * EX: List of availbe plates [45,35,25] sorted from greatest to least. 45lbs would be used then 35lb then 25lb etc...
  *
  * Note: By default will calculate for a conversion of pounds.
  *
  * @param targetWeight the total weight to add up to.
- * @return the list of plates needed to add to the targetWeight and left over target weight.
+ * @param barbellWeight the weight of the barbell.
+ * @param availablePlates the list of available plates to calculate the target weight for.
+ * @return the list of plates needed to add to the targetWeight and left over target weight. (e.g. {plate? : Array<Plate>, leftoverWeight : number})
  */
-const calcRequiredPlatesStandard = (
-  targetWeight: number
+const calcRequiredPlates = (
+  targetWeight: number,
+  barbellWeight: number,
+  availablePlates: Array<Plate>
 ): { plates?: Array<Plate>; leftoverWeight: number } => {
   // Target weight must be a value > 0 or else return default {undefined, -1} object.
   if (targetWeight <= 0) {
     return { plates: undefined, leftoverWeight: -1 };
   }
+  // Since we're using pop() for Array, the array will be sorted from least to greatest. [25,35,45] <== 45lb will be popped and removed.
+  availablePlates = availablePlates.sort(
+    (a: Plate, b: Plate) => a.type - b.type
+  );
 
-  const { availablePlates, barbellWeight } = new DefaultPlateConfig();
   const platesResult = Array<Plate>();
 
   // Calculate the weight for one side of the barbell.
   // EX: 135lbs - 45lbs = 90 / 2 => 45lbs per side.
   let target = (targetWeight - barbellWeight) / 2;
 
-  // Since we're using pop() for Array, the array will be sorted from least to greatest. [25,35,45] <== 45lb will be popped and removed.
   while (target != 0 && availablePlates.length) {
     const currHeaviestPlate: Plate =
       availablePlates[availablePlates.length - 1];
@@ -107,6 +112,6 @@ const calcRequiredPlatesStandard = (
 };
 
 export default {
-  calculateRequiredPlates: calcRequiredPlatesStandard,
+  calculateRequiredPlates: calcRequiredPlates,
   DefaultPlateConfig,
 };
