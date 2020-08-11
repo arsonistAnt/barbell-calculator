@@ -17,7 +17,7 @@ type PlateListProps = {
   currentSelection: Set<number>;
   onUpdateCurrentSelection?: (selection: Set<number>) => void;
   onIncrementUpdate?: (plate: Plate, newAmount: number) => void;
-  custom: boolean;
+  useLimitedPlates: boolean;
 };
 
 type PlateIncrementerProps = {
@@ -94,7 +94,7 @@ export const PlateList: React.FC<PlateListProps> = ({
   plateConfiguration,
   onUpdateCurrentSelection,
   onIncrementUpdate,
-  custom,
+  useLimitedPlates: custom,
 }) => {
   const { availablePlates } = plateConfiguration;
 

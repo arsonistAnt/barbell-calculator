@@ -75,7 +75,6 @@ const setupAutoSave = (
   // Save settings when navigating away from settings screen.
   useEffect(() => {
     const unsubscribeListener: any = navigation.addListener("blur", () => {
-      console.log("BYE SCREEN!");
       action?.();
       return unsubscribeListener;
     });
@@ -85,7 +84,11 @@ const setupAutoSave = (
 
 const SettingScreen: React.FC<Props> = ({ navigation }) => {
   const settingsState = useContext(SettingsContext);
-  const { state: userSettings, dispatch } = settingsState;
+  const {
+    state: { plateConfig },
+    dispatch,
+  } = settingsState;
+  // Auto save when user navigates away from settings screen.
   setupAutoSave(navigation, () => {
     dispatch({ type: "save_user_settings" });
   });
@@ -111,15 +114,15 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
                 renderItem: () => (
                   <TouchableHighlight>
                     <PlateList
-                      plateConfiguration={userSettings.plateConfig}
-                      custom={userSettings.customMode}
-                      currentSelection={userSettings.checkedPlateTypes}
+                      plateConfiguration={plateConfig}
+                      useLimitedPlates={plateConfig.useLimitedPlates}
+                      currentSelection={plateConfig.selectedPlates}
                       onUpdateCurrentSelection={(
-                        availableTypes: Set<number>
+                        selectedPlates: Set<number>
                       ) => {
                         dispatch({
-                          type: "update_checked_plates",
-                          newTypeSet: availableTypes,
+                          type: "update_plate_config",
+                          newPlateConfig: { ...plateConfig, selectedPlates },
                         });
                       }}
                       onIncrementUpdate={(plate: Plate, amount: number) => {

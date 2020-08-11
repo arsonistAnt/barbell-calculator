@@ -3,11 +3,17 @@ import { Context as SettingsContext } from "../../context/SettingsContext";
 import { Switch } from "react-native";
 
 const LimitedPlatesComponent: React.FC = () => {
-  const { state: userSettings, dispatch } = useContext(SettingsContext);
+  const {
+    state: { plateConfig },
+    dispatch,
+  } = useContext(SettingsContext);
   const toggleSwitch = () =>
     dispatch({
-      type: "toggle_custom_plates",
-      isEnabled: !userSettings.customMode,
+      type: "update_plate_config",
+      newPlateConfig: {
+        ...plateConfig,
+        useLimitedPlates: !plateConfig.useLimitedPlates,
+      },
     });
 
   return (
@@ -15,7 +21,7 @@ const LimitedPlatesComponent: React.FC = () => {
       trackColor={{ false: "#767577", true: "#81b0ff" }}
       ios_backgroundColor="#3e3e3e"
       onValueChange={toggleSwitch}
-      value={userSettings.customMode}
+      value={plateConfig.useLimitedPlates}
     />
   );
 };

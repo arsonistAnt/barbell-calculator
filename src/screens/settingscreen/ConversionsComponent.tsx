@@ -4,7 +4,7 @@ import { Entypo } from "@expo/vector-icons";
 import { Context as SettingsContext } from "../../context/SettingsContext";
 import { WeightConversions, PlateConfig } from "../../utils/PlateCalculation";
 
-const ConversionsComponent = () => {
+const ConversionsComponent: React.FunctionComponent = () => {
   const { state: userSettings, dispatch } = useContext(SettingsContext);
   const { conversionType } = userSettings.plateConfig;
 
@@ -17,19 +17,25 @@ const ConversionsComponent = () => {
     }
   };
 
-  const toggleConversion = () => {
+  const toggleConversion = (plateConfig: PlateConfig) => {
     let newConvType = WeightConversions.Pounds;
     if (conversionType == WeightConversions.Kilograms) {
       newConvType = WeightConversions.Pounds;
     } else {
       newConvType = WeightConversions.Kilograms;
     }
-    dispatch({ type: "update_type_conversion", conversionType: newConvType });
+    dispatch({
+      type: "update_plate_config",
+      newPlateConfig: { ...plateConfig, conversionType: newConvType },
+    });
   };
 
   return (
     <>
-      <TouchableOpacity onPress={toggleConversion} style={styles.container}>
+      <TouchableOpacity
+        onPress={() => toggleConversion(userSettings.plateConfig)}
+        style={styles.container}
+      >
         <Text style={styles.weightTypeText}>
           {getConversionTypeStr(conversionType)}
         </Text>

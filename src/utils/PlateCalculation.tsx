@@ -23,6 +23,8 @@ export interface PlateConfig {
   availablePlates: Array<Plate>;
   conversionType: WeightConversions;
   barbellWeight: number;
+  useLimitedPlates: boolean;
+  selectedPlates: Set<number>;
 }
 
 class StandardPlate {
@@ -57,6 +59,8 @@ export class DefaultPlateConfig {
   ];
   conversionType: WeightConversions = WeightConversions.Pounds;
   barbellWeight: number = 45;
+  useLimitedPlates: boolean = false;
+  selectedPlates: Set<number> = new Set([2.5, 5, 10, 25, 35, 45]);
 }
 
 /**
@@ -73,7 +77,7 @@ export class DefaultPlateConfig {
  * @param availablePlates the list of available plates to calculate the target weight for.
  * @return the list of plates needed to add to the targetWeight and left over target weight. (e.g. {plate? : Array<Plate>, leftoverWeight : number})
  */
-const calcRequiredPlates = (
+const getRequiredPlates = (
   targetWeight: number,
   barbellWeight: number,
   availablePlates: Array<Plate>
@@ -111,7 +115,15 @@ const calcRequiredPlates = (
   return { plates: platesResult, leftoverWeight: target };
 };
 
+const calcRequiredPlates = (
+  targetWeight: number,
+  config: PlateConfig
+): { plates?: Array<Plate>; leftoverWeight: number } => {
+  const { barbellWeight, availablePlates } = config;
+  return getRequiredPlates(targetWeight, barbellWeight, availablePlates);
+};
+
 export default {
-  calculateRequiredPlates: calcRequiredPlates,
+  calcRequiredPlates,
   DefaultPlateConfig,
 };

@@ -5,8 +5,11 @@ import { Context as SettingsContext } from "../../context/SettingsContext";
 
 const BarWeightComponent: React.FC = () => {
   const settingsState = useContext(SettingsContext);
-  const { state: userSettings, dispatch } = settingsState;
-  const currBarWeight = userSettings.plateConfig.barbellWeight;
+  const {
+    state: { plateConfig },
+    dispatch,
+  } = settingsState;
+  const currBarWeight = plateConfig.barbellWeight;
 
   return (
     <>
@@ -17,14 +20,20 @@ const BarWeightComponent: React.FC = () => {
         <IncrementButton
           onIncrementPressed={() =>
             dispatch({
-              type: "update_barbell_weight",
-              newWeight: currBarWeight + 5,
+              type: "update_plate_config",
+              newPlateConfig: {
+                ...plateConfig,
+                barbellWeight: plateConfig.barbellWeight + 5,
+              },
             })
           }
           onDecrementPressed={() =>
             dispatch({
-              type: "update_barbell_weight",
-              newWeight: currBarWeight - 5,
+              type: "update_plate_config",
+              newPlateConfig: {
+                ...plateConfig,
+                barbellWeight: plateConfig.barbellWeight - 5,
+              },
             })
           }
         />

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, FunctionComponent } from "react";
 import {
   StyleSheet,
   View,
@@ -14,7 +14,7 @@ import {
 } from "../../context/SettingsContext";
 import AsyncStorage from "@react-native-community/async-storage";
 
-const DismissKeyboard = ({ children }) => (
+const DismissKeyboard: FunctionComponent = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     {children}
   </TouchableWithoutFeedback>
@@ -30,21 +30,10 @@ const calculatePlates = (
   userSettings: CalculationSettings,
   targetWeight: number
 ): { plates?: Array<Plate>; leftoverWeight: number } => {
-  const { plateConfig, checkedPlateTypes, customMode } = userSettings;
+  const { plateConfig } = userSettings;
   const { availablePlates, barbellWeight } = plateConfig;
-  // Need a shallow copy.
-  let currAvailablePlates = availablePlates.slice();
-  // Filter out by the checked plates if custom numbers are not enabled.
-  if (!customMode) {
-    currAvailablePlates = currAvailablePlates.filter((plate: Plate) =>
-      checkedPlateTypes.has(plate.type)
-    );
-  }
-  let plates = PlateCalculation.calculateRequiredPlates(
-    targetWeight,
-    barbellWeight,
-    currAvailablePlates
-  );
+
+  let plates = PlateCalculation.calcRequiredPlates(targetWeight, plateConfig);
   return plates;
 };
 
