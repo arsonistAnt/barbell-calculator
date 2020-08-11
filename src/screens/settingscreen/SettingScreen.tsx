@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, FunctionComponent } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -6,39 +6,59 @@ import {
   SectionList,
   Text,
   TouchableHighlight,
-} from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
+} from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import {
   OptionsList,
   OptionItem,
-} from '../../components/optionlist/OptionList';
-import { Plate } from '../../utils/PlateCalculation';
-import { PlateList } from '../../components/platelist/PlateList';
-import BarWeightComponent from './BarWeightComponent';
-import ConversionsComponent from './ConversionsComponent';
-import LimitedPlatesComponent from './LimitedPlatesComponent';
-import { Context as SettingsContext } from '../../context/SettingsContext';
+} from "../../components/optionlist/OptionList";
+import { Plate } from "../../utils/PlateCalculation";
+import { PlateList } from "../../components/platelist/PlateList";
+import BarWeightComponent from "./barWeightComponent";
+import ConversionsComponent from "./conversionsComponent";
+import LimitedPlatesComponent from "./limitedPlatesComponent";
+import { Context as SettingsContext } from "../../context/SettingsContext";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 type Props = {
   navigation: StackNavigationProp<any, any>;
+};
+
+const resetComponent: FunctionComponent = () => {
+  const settingsState = useContext(SettingsContext);
+  const { dispatch } = settingsState;
+  return (
+    <TouchableOpacity
+      onPress={() => {
+        dispatch({ type: "restore_to_default_settings" });
+      }}
+    >
+      <Text>Reset to default...</Text>
+    </TouchableOpacity>
+  );
 };
 
 // Create list of options for our options list.
 const optionItems: Array<OptionItem> = [
   {
     id: 0,
-    optionLabel: 'Unit',
+    optionLabel: "Unit",
     itemComponent: ConversionsComponent,
   },
   {
     id: 1,
-    optionLabel: 'Bar weight',
+    optionLabel: "Bar weight",
     itemComponent: BarWeightComponent,
   },
   {
     id: 3,
-    optionLabel: 'Limited number of plates',
+    optionLabel: "Limited number of plates",
     itemComponent: LimitedPlatesComponent,
+  },
+  {
+    id: 4,
+    optionLabel: undefined,
+    itemComponent: resetComponent,
   },
 ];
 
@@ -54,8 +74,8 @@ const setupAutoSave = (
 ) => {
   // Save settings when navigating away from settings screen.
   useEffect(() => {
-    const unsubscribeListener: any = navigation.addListener('blur', () => {
-      console.log('BYE SCREEN!');
+    const unsubscribeListener: any = navigation.addListener("blur", () => {
+      console.log("BYE SCREEN!");
       action?.();
       return unsubscribeListener;
     });
@@ -67,7 +87,7 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
   const settingsState = useContext(SettingsContext);
   const { state: userSettings, dispatch } = settingsState;
   setupAutoSave(navigation, () => {
-    dispatch({ type: 'save_user_settings' });
+    dispatch({ type: "save_user_settings" });
   });
 
   return (
@@ -77,8 +97,8 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
           <SectionList
             sections={[
               {
-                title: '',
-                data: [''],
+                title: "",
+                data: [""],
                 renderItem: () => (
                   <TouchableHighlight>
                     <OptionsList optionItemList={optionItems} />
@@ -86,8 +106,8 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
                 ),
               },
               {
-                title: '',
-                data: [''],
+                title: "",
+                data: [""],
                 renderItem: () => (
                   <TouchableHighlight>
                     <PlateList
@@ -98,14 +118,14 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
                         availableTypes: Set<number>
                       ) => {
                         dispatch({
-                          type: 'update_checked_plates',
+                          type: "update_checked_plates",
                           newTypeSet: availableTypes,
                         });
                       }}
                       onIncrementUpdate={(plate: Plate, amount: number) => {
                         plate.amount = amount;
                         dispatch({
-                          type: 'update_plate_amount',
+                          type: "update_plate_amount",
                           newPlate: plate,
                         });
                       }}
@@ -128,12 +148,12 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
+    flexDirection: "column",
     flex: 1,
-    backgroundColor: '#171717',
+    backgroundColor: "#171717",
   },
   itemText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 20,
   },
 });

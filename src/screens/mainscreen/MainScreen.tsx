@@ -12,6 +12,7 @@ import {
   Context as SettingsContext,
   CalculationSettings,
 } from "../../context/SettingsContext";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -31,10 +32,11 @@ const calculatePlates = (
 ): { plates?: Array<Plate>; leftoverWeight: number } => {
   const { plateConfig, checkedPlateTypes, customMode } = userSettings;
   const { availablePlates, barbellWeight } = plateConfig;
-  let currAvailablePlates = availablePlates;
+  // Need a shallow copy.
+  let currAvailablePlates = availablePlates.slice();
   // Filter out by the checked plates if custom numbers are not enabled.
   if (!customMode) {
-    currAvailablePlates = plateConfig.availablePlates.filter((plate: Plate) =>
+    currAvailablePlates = currAvailablePlates.filter((plate: Plate) =>
       checkedPlateTypes.has(plate.type)
     );
   }
@@ -49,7 +51,6 @@ const calculatePlates = (
 const MainScreen = () => {
   const { state: userSettings } = useContext(SettingsContext);
   const [weight, setWeight] = useState(0.0);
-
   let plates = calculatePlates(userSettings, weight);
 
   const handleChangeWeight = (currWeight: number) => {

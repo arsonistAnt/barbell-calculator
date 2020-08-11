@@ -30,6 +30,7 @@ type SettingAction =
 
 type SettingStorageAction =
   | { type: "save_user_settings" }
+  | { type: "restore_to_default_settings" }
   | { type: "update_user_settings"; updatedSettings: CalculationSettings };
 
 /**
@@ -76,6 +77,8 @@ const settingsReducer = (
       return state;
     case "update_user_settings":
       return action.updatedSettings;
+    case "restore_to_default_settings":
+      return constructDefaultSettings();
     default:
       return state;
   }
