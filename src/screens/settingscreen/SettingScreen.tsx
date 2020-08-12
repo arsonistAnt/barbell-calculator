@@ -1,5 +1,12 @@
 import React, { useContext, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, View } from 'react-native';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  SectionList,
+  Text,
+  TouchableHighlight,
+} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import {
   OptionsList,
@@ -67,23 +74,52 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
     <>
       <SafeAreaView style={styles.container}>
         <View style={{ marginTop: 10 }}>
-          <OptionsList optionItemList={optionItems} />
-          <View style={{ marginVertical: 16 }} />
-          <PlateList
-            plateConfiguration={userSettings.plateConfig}
-            custom={userSettings.customMode}
-            currentSelection={userSettings.checkedPlateTypes}
-            onUpdateCurrentSelection={(availableTypes: Set<number>) => {
-              dispatch({
-                type: 'update_checked_plates',
-                newTypeSet: availableTypes,
-              });
-            }}
-            onIncrementUpdate={(plate: Plate, amount: number) => {
-              plate.amount = amount;
-              dispatch({ type: 'update_plate_amount', newPlate: plate });
-            }}
+          <SectionList
+            sections={[
+              {
+                title: '',
+                data: [''],
+                renderItem: () => (
+                  <TouchableHighlight>
+                    <OptionsList optionItemList={optionItems} />
+                  </TouchableHighlight>
+                ),
+              },
+              {
+                title: '',
+                data: [''],
+                renderItem: () => (
+                  <TouchableHighlight>
+                    <PlateList
+                      plateConfiguration={userSettings.plateConfig}
+                      custom={userSettings.customMode}
+                      currentSelection={userSettings.checkedPlateTypes}
+                      onUpdateCurrentSelection={(
+                        availableTypes: Set<number>
+                      ) => {
+                        dispatch({
+                          type: 'update_checked_plates',
+                          newTypeSet: availableTypes,
+                        });
+                      }}
+                      onIncrementUpdate={(plate: Plate, amount: number) => {
+                        plate.amount = amount;
+                        dispatch({
+                          type: 'update_plate_amount',
+                          newPlate: plate,
+                        });
+                      }}
+                    />
+                  </TouchableHighlight>
+                ),
+              },
+            ]}
+            keyExtractor={(item, index) => item + index}
+            renderSectionHeader={({ section: { title } }) => (
+              <Text>{title}</Text>
+            )}
           />
+          <View style={{ marginVertical: 16 }} />
         </View>
       </SafeAreaView>
     </>
