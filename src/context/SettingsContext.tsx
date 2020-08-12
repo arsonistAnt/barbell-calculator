@@ -108,9 +108,9 @@ const getSettingsPersistent = async (): Promise<CalculationSettings> => {
 
   if (storedSettings != null) {
     const parsedSettings: CalculationSettings = JSON.parse(storedSettings);
-    // Revert the checkedPlateTypes property back to a set.
-    parsedSettings.plateConfig.selectedPlates = new Set<number>(
-      parsedSettings.plateConfig.selectedPlates
+    // Properties for the plate config in the storage needs to be re-initialized.
+    parsedSettings.plateConfig = new DefaultPlateConfig(
+      parsedSettings.plateConfig
     );
 
     return parsedSettings;

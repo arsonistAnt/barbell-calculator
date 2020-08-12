@@ -14,9 +14,9 @@ import {
 } from "../../components/optionlist/OptionList";
 import { Plate } from "../../utils/PlateCalculation";
 import { PlateList } from "../../components/platelist/PlateList";
-import BarWeightComponent from "./barWeightComponent";
-import ConversionsComponent from "./conversionsComponent";
-import LimitedPlatesComponent from "./limitedPlatesComponent";
+import BarWeightComponent from "./BarWeightComponent";
+import ConversionsComponent from "./ConversionsComponent";
+import LimitedPlatesComponent from "./LimitedPlatesComponent";
 import { Context as SettingsContext } from "../../context/SettingsContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 

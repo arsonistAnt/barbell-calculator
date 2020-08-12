@@ -7,12 +7,14 @@ import {
 } from "react-native";
 import Header from "./mainScreenHeader";
 import Body from "./mainScreenBody";
-import PlateCalculation, { Plate } from "../../utils/PlateCalculation";
+import PlateCalculation, {
+  Plate,
+  DefaultPlateConfig,
+} from "../../utils/PlateCalculation";
 import {
   Context as SettingsContext,
   CalculationSettings,
 } from "../../context/SettingsContext";
-import AsyncStorage from "@react-native-community/async-storage";
 
 const DismissKeyboard: FunctionComponent = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -27,21 +29,21 @@ const DismissKeyboard: FunctionComponent = ({ children }) => (
  * @param targetWeight The target weight to calculate for.
  */
 const calculatePlates = (
-  userSettings: CalculationSettings,
+  plateConfig: DefaultPlateConfig,
   targetWeight: number
 ): { plates?: Array<Plate>; leftoverWeight: number } => {
-  const { plateConfig } = userSettings;
-  const { availablePlates, barbellWeight } = plateConfig;
-
-  let plates = PlateCalculation.calcRequiredPlates(targetWeight, plateConfig);
+  let plates = PlateCalculation.calcRequiredPlates(
+    targetWeight,
+    // A new copy of plate config must be created, otherwise we will be referencing the plateConfig stored in the state.
+    new DefaultPlateConfig(plateConfig)
+  );
   return plates;
 };
 
 const MainScreen = () => {
   const { state: userSettings } = useContext(SettingsContext);
   const [weight, setWeight] = useState(0.0);
-  let plates = calculatePlates(userSettings, weight);
-
+  let plates = calculatePlates(userSettings.plateConfig, weight);
   const handleChangeWeight = (currWeight: number) => {
     setWeight(currWeight);
   };

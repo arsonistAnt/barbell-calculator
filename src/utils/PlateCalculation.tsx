@@ -61,6 +61,21 @@ export class DefaultPlateConfig {
   barbellWeight: number = 45;
   useLimitedPlates: boolean = false;
   selectedPlates: Set<number> = new Set([2.5, 5, 10, 25, 35, 45]);
+
+  constructor();
+  constructor(config: DefaultPlateConfig);
+  constructor(config?: DefaultPlateConfig) {
+    if (config !== undefined) {
+      this.availablePlates = config.availablePlates.slice();
+      this.selectedPlates = new Set(config.selectedPlates);
+      this.conversionType = config.conversionType;
+      this.useLimitedPlates = config.useLimitedPlates;
+    }
+  }
+
+  copy(): DefaultPlateConfig {
+    return new DefaultPlateConfig(this);
+  }
 }
 
 /**
