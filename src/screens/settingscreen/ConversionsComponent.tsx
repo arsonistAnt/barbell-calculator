@@ -2,9 +2,13 @@ import React, { useContext } from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { Context as SettingsContext } from "../../context/SettingsContext";
-import { WeightConversions, PlateConfig } from "../../utils/PlateCalculation";
+import {
+  WeightConversions,
+  PlateConfig,
+  DefaultPlateConfig,
+} from "../../utils/PlateCalculation";
 
-const ConversionsComponent = () => {
+const ConversionsComponent: React.FunctionComponent = () => {
   const { state: userSettings, dispatch } = useContext(SettingsContext);
   const { conversionType } = userSettings.plateConfig;
 
@@ -17,19 +21,27 @@ const ConversionsComponent = () => {
     }
   };
 
-  const toggleConversion = () => {
-    let newConvType = WeightConversions.Pounds;
+  const toggleConversion = (plateConfig: PlateConfig) => {
+    let newConfig = Object.assign(new DefaultPlateConfig(), plateConfig);
     if (conversionType == WeightConversions.Kilograms) {
-      newConvType = WeightConversions.Pounds;
+      newConfig.conversionType = WeightConversions.Pounds;
+      newConfig.toLb();
     } else {
-      newConvType = WeightConversions.Kilograms;
+      newConfig.conversionType = WeightConversions.Kilograms;
+      newConfig.toKg();
     }
-    dispatch({ type: "update_type_conversion", conversionType: newConvType });
+    dispatch({
+      type: "update_plate_config",
+      newPlateConfig: { ...newConfig },
+    });
   };
 
   return (
     <>
-      <TouchableOpacity onPress={toggleConversion} style={styles.container}>
+      <TouchableOpacity
+        onPress={() => toggleConversion(userSettings.plateConfig)}
+        style={styles.container}
+      >
         <Text style={styles.weightTypeText}>
           {getConversionTypeStr(conversionType)}
         </Text>

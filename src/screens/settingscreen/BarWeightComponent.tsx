@@ -2,11 +2,35 @@ import React, { useContext } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import IncrementButton from "../../components/button/IncrementButton";
 import { Context as SettingsContext } from "../../context/SettingsContext";
+import {
+  PlateConfig,
+  DefaultPlateConfig,
+  WeightConversions,
+} from "../../utils/PlateCalculation";
 
-const BarWeightComponent: React.FC = () => {
+/**
+ * Returns the incremental value determined by the weight type conversion.
+ *
+ * @param type Weight type.
+ * @return an integer that represents an incremental value.
+ */
+const getIncrementalValue = (type: WeightConversions): number => {
+  switch (type) {
+    case WeightConversions.Kilograms:
+      return 1;
+    default:
+      return 5;
+  }
+};
+
+const BarWeightComponent: React.FunctionComponent = () => {
   const settingsState = useContext(SettingsContext);
-  const { state: userSettings, dispatch } = settingsState;
-  const currBarWeight = userSettings.plateConfig.barbellWeight;
+  const {
+    state: { plateConfig },
+    dispatch,
+  } = settingsState;
+  const currBarWeight = plateConfig.barbellWeight;
+  const incrementalVal = getIncrementalValue(plateConfig.conversionType);
 
   return (
     <>
@@ -17,14 +41,20 @@ const BarWeightComponent: React.FC = () => {
         <IncrementButton
           onIncrementPressed={() =>
             dispatch({
-              type: "update_barbell_weight",
-              newWeight: currBarWeight + 5,
+              type: "update_plate_config",
+              newPlateConfig: {
+                ...plateConfig,
+                barbellWeight: plateConfig.barbellWeight + incrementalVal,
+              } as DefaultPlateConfig,
             })
           }
           onDecrementPressed={() =>
             dispatch({
-              type: "update_barbell_weight",
-              newWeight: currBarWeight - 5,
+              type: "update_plate_config",
+              newPlateConfig: {
+                ...plateConfig,
+                barbellWeight: plateConfig.barbellWeight + incrementalVal * -1,
+              } as DefaultPlateConfig,
             })
           }
         />

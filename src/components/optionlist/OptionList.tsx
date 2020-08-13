@@ -16,7 +16,7 @@ type OptionsListProps = {
  */
 export class OptionItem {
   id: number;
-  optionLabel: String;
+  optionLabel?: String;
   itemComponent: React.FC;
 
   constructor(id: number, label: String, itemComponent: React.FC) {

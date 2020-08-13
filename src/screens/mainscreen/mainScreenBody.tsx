@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, { FunctionComponent } from "react";
+import { StyleSheet, Text, View, Button } from "react-native";
 
-const Body = ({ calculatedPlates }) => {
+const Body: FunctionComponent = ({ calculatedPlates }) => {
   const isLeftoverWeight = () => {
     if (
       calculatedPlates.leftoverWeight < 0 ||
@@ -24,11 +24,11 @@ const Body = ({ calculatedPlates }) => {
           calculatedPlates.plates.map((item, index) => (
             <Text key={index}>
               {item.amount +
-                ' x ' +
+                " x " +
                 item.type +
-                ' => ' +
+                " => " +
                 item.amount * item.type +
-                'LB\n'}
+                "LB\n"}
             </Text>
           ))
         )}
@@ -47,16 +47,16 @@ const Body = ({ calculatedPlates }) => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 50,
   },
   weightText: {
     fontSize: 25,
-    color: 'white',
+    color: "white",
   },
   remainingText: {
     fontSize: 25,
-    color: 'white',
+    color: "white",
     paddingTop: 100,
   },
 });

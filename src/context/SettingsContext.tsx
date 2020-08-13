@@ -5,31 +5,29 @@ import {
   Plate,
   DefaultPlateConfig,
   PlateConfig,
-  WeightConversions,
 } from "../utils/PlateCalculation";
 
 /**
  * Type restriction that contains all calculation settings for the barbell calculator.
  */
-interface CalculationSettings {
+export interface CalculationSettings {
   // Boolean to check if custom plate numbers should be used.
-  customMode: boolean;
   plateConfig: DefaultPlateConfig;
-  checkedPlateTypes: Set<number>;
 }
 
 /**
  * Types of actions relative to user settings.
  */
-type SettingAction =
-  | { type: "toggle_custom_plates"; isEnabled: boolean }
-  | { type: "update_checked_plates"; newTypeSet: Set<number> }
-  | { type: "update_plate_amount"; newPlate: Plate }
-  | { type: "update_type_conversion"; conversionType: WeightConversions }
-  | { type: "update_barbell_weight"; newWeight: number };
+type PlateConfigAction =
+  | {
+      type: "update_plate_config";
+      newPlateConfig: PlateConfig;
+    }
+  | { type: "update_plate_amount"; newPlate: Plate };
 
 type SettingStorageAction =
   | { type: "save_user_settings" }
+  | { type: "restore_to_default_settings" }
   | { type: "update_user_settings"; updatedSettings: CalculationSettings };
 
 /**
@@ -37,7 +35,7 @@ type SettingStorageAction =
  */
 interface SettingsContextProp {
   state: CalculationSettings;
-  dispatch: React.Dispatch<SettingAction | SettingStorageAction>;
+  dispatch: React.Dispatch<PlateConfigAction | SettingStorageAction>;
 }
 
 /**
@@ -48,34 +46,24 @@ interface SettingsContextProp {
  */
 const settingsReducer = (
   state: CalculationSettings,
-  action: SettingAction | SettingStorageAction
+  action: PlateConfigAction | SettingStorageAction
 ) => {
   switch (action.type) {
-    case "toggle_custom_plates":
-      return { ...state, customMode: action.isEnabled };
-    case "update_checked_plates":
-      return { ...state, checkedPlateTypes: action.newTypeSet };
+    case "update_plate_config":
+      return { ...state, plateConfig: action.newPlateConfig };
     case "update_plate_amount":
       const newConfig = updateConfigPlateAmount(
         state.plateConfig,
         action.newPlate
       );
       return { ...state, plateConfig: newConfig };
-    case "update_type_conversion": {
-      const currPlateConfig = state.plateConfig;
-      currPlateConfig.conversionType = action.conversionType;
-      return { ...state, plateConfig: currPlateConfig };
-    }
-    case "update_barbell_weight": {
-      const currPlateConfig = state.plateConfig;
-      currPlateConfig.barbellWeight = action.newWeight;
-      return { ...state, plateConfig: currPlateConfig };
-    }
     case "save_user_settings":
       saveSettings(state);
       return state;
     case "update_user_settings":
       return action.updatedSettings;
+    case "restore_to_default_settings":
+      return constructDefaultSettings();
     default:
       return state;
   }
@@ -91,10 +79,10 @@ const updateConfigPlateAmount = (
   currPlateConfig: PlateConfig,
   newPlateState: Plate
 ): PlateConfig => {
-  const updateIndex = currPlateConfig.availablePlates.findIndex(
+  const updateIndex = currPlateConfig.standardPlates.findIndex(
     (plate) => plate.type == newPlateState.type
   );
-  currPlateConfig.availablePlates[updateIndex].amount = newPlateState.amount;
+  currPlateConfig.standardPlates[updateIndex].amount = newPlateState.amount;
   return currPlateConfig;
 };
 
@@ -119,12 +107,10 @@ const getSettingsPersistent = async (): Promise<CalculationSettings> => {
   const storedSettings = await AsynStorage.getItem(StorageKeys.UserSettings);
 
   if (storedSettings != null) {
-    const parsedSettings: CalculationSettings = JSON.parse(
-      storedSettings
-    ) as CalculationSettings;
-    // Revert the checkedPlateTypes property back to a set.
-    parsedSettings.checkedPlateTypes = new Set<number>(
-      parsedSettings.checkedPlateTypes
+    const parsedSettings: CalculationSettings = JSON.parse(storedSettings);
+    // Properties for the plate config in the storage needs to be re-initialized.
+    parsedSettings.plateConfig = new DefaultPlateConfig(
+      parsedSettings.plateConfig
     );
 
     return parsedSettings;
@@ -139,20 +125,9 @@ const getSettingsPersistent = async (): Promise<CalculationSettings> => {
  */
 const constructDefaultSettings = (): CalculationSettings => {
   const newPlateConfig = new DefaultPlateConfig();
-  // Filter and reduce the default plate numbers into a set of numbers.
-  const defaultCheckedPlates: Set<number> = newPlateConfig.availablePlates.reduce(
-    (defaultSet, currPlate: Plate) => {
-      if ([2.5, 5, 10, 25, 35, 45].includes(currPlate.type)) {
-        defaultSet.add(currPlate.type);
-      }
-      return defaultSet;
-    },
-    new Set<number>()
-  );
+
   return {
-    customMode: false,
     plateConfig: newPlateConfig,
-    checkedPlateTypes: defaultCheckedPlates,
   };
 };
 

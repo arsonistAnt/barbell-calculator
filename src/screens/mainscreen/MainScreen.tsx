@@ -1,27 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, FunctionComponent } from "react";
 import {
   StyleSheet,
-  Text,
   View,
-  TextInput,
   Keyboard,
   TouchableWithoutFeedback,
-} from 'react-native';
-import Header from './mainScreenHeader';
-import Body from './mainScreenBody';
-import PlateCalculation from '../../utils/PlateCalculation';
+} from "react-native";
+import Header from "./mainScreenHeader";
+import Body from "./mainScreenBody";
+import PlateCalculation, {
+  Plate,
+  DefaultPlateConfig,
+} from "../../utils/PlateCalculation";
+import {
+  Context as SettingsContext,
+  CalculationSettings,
+} from "../../context/SettingsContext";
 
-const DismissKeyboard = ({ children }) => (
+const DismissKeyboard: FunctionComponent = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     {children}
   </TouchableWithoutFeedback>
 );
 
+/**
+ * Use the plate configuration in the user settings to calculate the list of plates.
+ *
+ * @param config The plate configuration to use for this calculation.
+ * @param targetWeight The target weight to calculate for.
+ */
+const calculatePlates = (
+  plateConfig: DefaultPlateConfig,
+  targetWeight: number
+): { plates?: Array<Plate>; leftoverWeight: number } => {
+  let plates = PlateCalculation.calcRequiredPlates(
+    targetWeight,
+    // A new copy of plate config must be created, otherwise we will be referencing the plateConfig stored in the state.
+    new DefaultPlateConfig(plateConfig)
+  );
+  return plates;
+};
+
 const MainScreen = () => {
+  const { state: userSettings } = useContext(SettingsContext);
   const [weight, setWeight] = useState(0.0);
-
-  let plates = PlateCalculation.calculateRequiredPlates(weight);
-
+  let plates = calculatePlates(userSettings.plateConfig, weight);
   const handleChangeWeight = (currWeight: number) => {
     setWeight(currWeight);
   };
@@ -39,7 +61,7 @@ const MainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#171717',
+    backgroundColor: "#171717",
   },
 });
 
