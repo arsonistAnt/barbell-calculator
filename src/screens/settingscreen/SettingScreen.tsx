@@ -73,7 +73,6 @@ const setupAutoSave = (
   action?: () => void
 ) => {
   // Save settings when navigating away from settings screen.
-  // TODO: Dispatch and update the plate config appropriately.
   useEffect(() => {
     const unsubscribeListener: any = navigation.addListener("blur", () => {
       action?.();
