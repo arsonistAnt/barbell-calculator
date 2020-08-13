@@ -2,8 +2,10 @@ import React, { useContext } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import IncrementButton from "../../components/button/IncrementButton";
 import { Context as SettingsContext } from "../../context/SettingsContext";
+import { PlateConfig, DefaultPlateConfig } from "../../utils/PlateCalculation";
 
-const BarWeightComponent: React.FC = () => {
+// TODO: Increment by 1, or -1 depending on type conversion.
+const BarWeightComponent: React.FunctionComponent = () => {
   const settingsState = useContext(SettingsContext);
   const {
     state: { plateConfig },
@@ -24,7 +26,7 @@ const BarWeightComponent: React.FC = () => {
               newPlateConfig: {
                 ...plateConfig,
                 barbellWeight: plateConfig.barbellWeight + 5,
-              },
+              } as DefaultPlateConfig,
             })
           }
           onDecrementPressed={() =>
@@ -33,7 +35,7 @@ const BarWeightComponent: React.FC = () => {
               newPlateConfig: {
                 ...plateConfig,
                 barbellWeight: plateConfig.barbellWeight - 5,
-              },
+              } as DefaultPlateConfig,
             })
           }
         />

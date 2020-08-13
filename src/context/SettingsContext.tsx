@@ -79,10 +79,10 @@ const updateConfigPlateAmount = (
   currPlateConfig: PlateConfig,
   newPlateState: Plate
 ): PlateConfig => {
-  const updateIndex = currPlateConfig.availablePlates.findIndex(
+  const updateIndex = currPlateConfig.standardPlates.findIndex(
     (plate) => plate.type == newPlateState.type
   );
-  currPlateConfig.availablePlates[updateIndex].amount = newPlateState.amount;
+  currPlateConfig.standardPlates[updateIndex].amount = newPlateState.amount;
   return currPlateConfig;
 };
 

@@ -20,11 +20,14 @@ export interface Plate {
  * @see calculateRequiredPlates
  */
 export interface PlateConfig {
-  availablePlates: Array<Plate>;
+  standardPlates: Array<Plate>;
   conversionType: WeightConversions;
   barbellWeight: number;
   useLimitedPlates: boolean;
   selectedPlates: Set<number>;
+
+  toKg(): PlateConfig;
+  toLb(): PlateConfig;
 }
 
 class StandardPlate {
@@ -33,6 +36,43 @@ class StandardPlate {
   constructor(type: number, amount: number) {
     this.type = type;
     this.amount = amount;
+  }
+
+  /**
+   * Creates the standard plate list for LB type plates.
+   *
+   * @returns list of standard lb type plates.
+   */
+  static createStandardLB(): Array<StandardPlate> {
+    return [
+      new StandardPlate(1.25, 0),
+      new StandardPlate(2.5, 0),
+      new StandardPlate(5, 0),
+      new StandardPlate(10, 0),
+      new StandardPlate(25, 0),
+      new StandardPlate(35, 0),
+      new StandardPlate(45, 0),
+      new StandardPlate(55, 0),
+      new StandardPlate(65, 0),
+      new StandardPlate(100, 0),
+    ];
+  }
+
+  /**
+   *
+   */
+  static createStandardKb(): Array<StandardPlate> {
+    return [
+      new StandardPlate(0.5, 0),
+      new StandardPlate(1.25, 0),
+      new StandardPlate(2.5, 0),
+      new StandardPlate(5, 0),
+      new StandardPlate(10, 0),
+      new StandardPlate(15, 0),
+      new StandardPlate(20, 0),
+      new StandardPlate(25, 0),
+      new StandardPlate(50, 0),
+    ];
   }
 }
 
@@ -44,37 +84,58 @@ class StandardPlate {
  *
  * @see {@link https://en.wikipedia.org/wiki/Weight_plate#:~:text=Plates%20are%20available%20in%20a,pound%20plates%20less%20commonly%20seen. | Common PLates}
  */
-export class DefaultPlateConfig {
-  availablePlates: Array<Plate> = [
-    new StandardPlate(1.25, 0),
-    new StandardPlate(2.5, 0), // This plate is considered a 2.5 plate but value is 2 for ease of calculation.
-    new StandardPlate(5, 0),
-    new StandardPlate(10, 0),
-    new StandardPlate(25, 0),
-    new StandardPlate(35, 0),
-    new StandardPlate(45, 0),
-    new StandardPlate(55, 0),
-    new StandardPlate(65, 0),
-    new StandardPlate(100, 0),
-  ];
+// TODO: Create two config objects based on KB and LB and save it to async storage.
+export class DefaultPlateConfig implements PlateConfig {
+  KgMultiplier: number = 0.453592;
+  standardPlates: Array<Plate> = StandardPlate.createStandardLB();
   conversionType: WeightConversions = WeightConversions.Pounds;
   barbellWeight: number = 45;
   useLimitedPlates: boolean = false;
   selectedPlates: Set<number> = new Set([2.5, 5, 10, 25, 35, 45]);
 
+  static createStandardSelectionKB(): Set<number> {
+    return new Set([2.5, 5, 10, 25, 35, 45]);
+  }
+
+  static createStandardSelectionLB(): Set<number> {
+    return new Set([2.5, 5, 10, 25, 35, 45]);
+  }
+
+  // Default constructor.
   constructor();
   constructor(config: DefaultPlateConfig);
+
+  // A copy constructor.
   constructor(config?: DefaultPlateConfig) {
     if (config !== undefined) {
-      this.availablePlates = config.availablePlates.slice();
+      this.barbellWeight = config.barbellWeight;
+      this.standardPlates = StandardPlate.createStandardLB();
       this.selectedPlates = new Set(config.selectedPlates);
       this.conversionType = config.conversionType;
       this.useLimitedPlates = config.useLimitedPlates;
     }
   }
 
-  copy(): DefaultPlateConfig {
-    return new DefaultPlateConfig(this);
+  /**
+   * Transform all plate weight types to kilograms from pounds
+   */
+  toKg(): PlateConfig {
+    this.conversionType = WeightConversions.Kilograms;
+    this.barbellWeight = this.barbellWeight * this.KgMultiplier;
+    this.standardPlates = StandardPlate.createStandardKb();
+    this.selectedPlates = new Set();
+    return this;
+  }
+
+  /**
+   * Transform all plate weights from kilograms to pounds.
+   */
+  toLb(): PlateConfig {
+    this.conversionType = WeightConversions.Pounds;
+    this.barbellWeight = this.barbellWeight / this.KgMultiplier;
+    this.standardPlates = StandardPlate.createStandardLB();
+    this.selectedPlates = new Set();
+    return this;
   }
 }
 
@@ -106,6 +167,9 @@ const getRequiredPlates = (
     (a: Plate, b: Plate) => a.type - b.type
   );
 
+  console.log(availablePlates);
+  console.log(barbellWeight);
+
   const platesResult = Array<Plate>();
 
   // Calculate the weight for one side of the barbell.
@@ -130,12 +194,33 @@ const getRequiredPlates = (
   return { plates: platesResult, leftoverWeight: target };
 };
 
+const getRequiredPlatesLimited = {};
+
+/**
+ * Calculate the required plates needed for the target weight, this function accepts a plate
+ * config object that will determine how calculations results are formatted.
+ *
+ * @param targetWeight The target weight to add the plate types up to.
+ * @param config The plate configuration that will determine how the plate results are calculated.
+ * @returns @see getRequiredPlates
+ */
 const calcRequiredPlates = (
   targetWeight: number,
   config: PlateConfig
 ): { plates?: Array<Plate>; leftoverWeight: number } => {
-  const { barbellWeight, availablePlates } = config;
-  return getRequiredPlates(targetWeight, barbellWeight, availablePlates);
+  const {
+    barbellWeight,
+    standardPlates: availablePlates,
+    selectedPlates,
+  } = config;
+  let userSelectedPlates = availablePlates;
+  // Check if configuration is set to use the amount of available plates.
+  if (!config.useLimitedPlates) {
+    userSelectedPlates = userSelectedPlates.filter((plate) =>
+      selectedPlates.has(plate.type)
+    );
+  }
+  return getRequiredPlates(targetWeight, barbellWeight, userSelectedPlates);
 };
 
 export default {

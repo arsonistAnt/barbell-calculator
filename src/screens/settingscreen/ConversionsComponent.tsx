@@ -2,7 +2,11 @@ import React, { useContext } from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { Context as SettingsContext } from "../../context/SettingsContext";
-import { WeightConversions, PlateConfig } from "../../utils/PlateCalculation";
+import {
+  WeightConversions,
+  PlateConfig,
+  DefaultPlateConfig,
+} from "../../utils/PlateCalculation";
 
 const ConversionsComponent: React.FunctionComponent = () => {
   const { state: userSettings, dispatch } = useContext(SettingsContext);
@@ -18,15 +22,17 @@ const ConversionsComponent: React.FunctionComponent = () => {
   };
 
   const toggleConversion = (plateConfig: PlateConfig) => {
-    let newConvType = WeightConversions.Pounds;
+    let newConfig = Object.assign(new DefaultPlateConfig(), plateConfig);
     if (conversionType == WeightConversions.Kilograms) {
-      newConvType = WeightConversions.Pounds;
+      newConfig.conversionType = WeightConversions.Pounds;
+      newConfig.toLb();
     } else {
-      newConvType = WeightConversions.Kilograms;
+      newConfig.conversionType = WeightConversions.Kilograms;
+      newConfig.toKg();
     }
     dispatch({
       type: "update_plate_config",
-      newPlateConfig: { ...plateConfig, conversionType: newConvType },
+      newPlateConfig: { ...newConfig },
     });
   };
 

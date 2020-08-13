@@ -7,7 +7,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import PlateListSeparator from "../ItemListSeparator";
-import { PlateConfig, Plate } from "../../utils/PlateCalculation";
+import {
+  PlateConfig,
+  Plate,
+  WeightConversions,
+} from "../../utils/PlateCalculation";
 import { MaterialIcons } from "@expo/vector-icons";
 import IncrementButton from "../../components/button/IncrementButton";
 
@@ -44,6 +48,18 @@ const PlateIncrementerComponent: React.FC<PlateIncrementerProps> = ({
       />
     </View>
   );
+};
+
+/**
+ * Returns the weight type in string format.
+ *
+ * @param currType The current enum for weight types.
+ */
+const getWeightConversionStr = (currType: WeightConversions): String => {
+  if (currType === WeightConversions.Kilograms) {
+    return "kg";
+  }
+  return "lb";
 };
 
 /**
@@ -96,7 +112,7 @@ export const PlateList: React.FC<PlateListProps> = ({
   onIncrementUpdate,
   useLimitedPlates: custom,
 }) => {
-  const { availablePlates } = plateConfiguration;
+  const { standardPlates: availablePlates } = plateConfiguration;
 
   const PlateItem = (plate: Plate, customMode: boolean) => {
     return (
@@ -107,7 +123,10 @@ export const PlateList: React.FC<PlateListProps> = ({
         disabled={customMode}
         style={styles.container}
       >
-        <Text style={styles.plateText}>{plate.type} lb</Text>
+        <Text style={styles.plateText}>
+          {plate.type}{" "}
+          {getWeightConversionStr(plateConfiguration.conversionType)}
+        </Text>
         {customMode ? (
           <PlateIncrementerComponent
             plate={plate}
