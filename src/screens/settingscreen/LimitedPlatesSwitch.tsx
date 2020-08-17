@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Context as SettingsContext } from "../../context/SettingsContext";
 import { Switch } from "react-native";
+import { DefaultPlateConfig } from "../../utils/PlateCalculation";
 
 const LimitedPlatesComponent: React.FC = () => {
   const {
@@ -13,7 +14,7 @@ const LimitedPlatesComponent: React.FC = () => {
       newPlateConfig: {
         ...plateConfig,
         useLimitedPlates: !plateConfig.useLimitedPlates,
-      },
+      } as DefaultPlateConfig,
     });
 
   return (

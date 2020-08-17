@@ -197,17 +197,20 @@ const calculateLimited = (
   // Get the required plates needed with plate amount limitations in mind.
   while (sideTarget > 0 && availablePlates.length) {
     const currentPlate = availablePlates[availablePlates.length - 1];
+    // The amount in the plate represents the actual total amount the user has, we need to halve it to properly calculate for plates needed PER SIDE.
+    const currentAmountPerSide = Math.trunc(currentPlate.amount / 2);
     const amountNeeded = Math.trunc(sideTarget / currentPlate.type);
     const newPlate = new StandardPlate(currentPlate.type, 0);
-    if (amountNeeded > 0 && currentPlate.amount != 0) {
-      if (amountNeeded <= currentPlate.amount) {
+    if (amountNeeded > 0 && currentAmountPerSide != 0) {
+      if (amountNeeded <= currentAmountPerSide) {
         newPlate.amount = amountNeeded;
       } else {
-        newPlate.amount = currentPlate.amount;
+        newPlate.amount = currentAmountPerSide;
       }
+      // The amount property in the Plate object is considered amount PER SIDE.
       requiredPlates.push(newPlate);
       // Calculate remaining side target weight.
-      sideTarget = Math.abs(sideTarget - newPlate.type * newPlate.amount);
+      sideTarget = Math.abs(sideTarget - newPlate.type * currentAmountPerSide);
     }
     availablePlates.pop();
   }
