@@ -12,11 +12,11 @@ import {
   OptionsList,
   OptionItem,
 } from "../../components/optionlist/OptionList";
-import { Plate } from "../../utils/PlateCalculation";
+import { Plate, DefaultPlateConfig } from "../../utils/PlateCalculation";
 import { PlateList } from "../../components/platelist/PlateList";
 import BarWeightComponent from "./BarWeightComponent";
 import ConversionsComponent from "./ConversionsComponent";
-import LimitedPlatesComponent from "./LimitedPlatesComponent";
+import LimitedPlatesComponent from "./LimitedPlatesSwitch";
 import { Context as SettingsContext } from "../../context/SettingsContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -122,7 +122,10 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
                       ) => {
                         dispatch({
                           type: "update_plate_config",
-                          newPlateConfig: { ...plateConfig, selectedPlates },
+                          newPlateConfig: {
+                            ...plateConfig,
+                            selectedPlates,
+                          } as DefaultPlateConfig,
                         });
                       }}
                       onIncrementUpdate={(plate: Plate, amount: number) => {

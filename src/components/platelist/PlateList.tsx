@@ -43,8 +43,8 @@ const PlateIncrementerComponent: React.FC<PlateIncrementerProps> = ({
         {plate.amount}
       </Text>
       <IncrementButton
-        onIncrementPressed={() => onAmountUpdate?.(plate, plate.amount + 1)}
-        onDecrementPressed={() => onAmountUpdate?.(plate, plate.amount - 1)}
+        onIncrementPressed={() => onAmountUpdate?.(plate, plate.amount + 2)}
+        onDecrementPressed={() => onAmountUpdate?.(plate, plate.amount - 2)}
       />
     </View>
   );
