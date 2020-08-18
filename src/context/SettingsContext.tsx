@@ -13,14 +13,17 @@ import {
  * Type restriction that contains all calculation settings for the barbell calculator.
  */
 export interface CalculationSettings {
-  // Boolean to check if custom plate numbers should be used.
-  plateConfig: DefaultPlateConfig;
+  kgConfig: DefaultPlateConfig;
+  lbConfig: DefaultPlateConfig;
+  // The current selected weight type.
+  currentWeightType: WeightConversions;
 }
 
 /**
  * Types of actions relative to user settings.
  */
 type PlateConfigAction =
+  | { type: "update_current_config_type"; weightType: WeightConversions }
   | {
       type: "update_plate_config";
       newPlateConfig: PlateConfig;
@@ -54,16 +57,11 @@ const settingsReducer = (
 ): CalculationSettings => {
   switch (action.type) {
     case "update_plate_config":
-      return {
-        ...state,
-        plateConfig: action.newPlateConfig as DefaultPlateConfig,
-      };
+      return getUpdatedPlateConfig(state, action.newPlateConfig);
     case "update_plate_amount":
-      const newConfig = updateConfigPlateAmount(
-        state.plateConfig,
-        action.newPlate
-      );
-      return { ...state, plateConfig: newConfig as DefaultPlateConfig };
+      const currConfig = getCurrentPlateTypeConfig(state);
+      const newConfig = updateConfigPlateAmount(currConfig, action.newPlate);
+      return getUpdatedPlateConfig(state, newConfig);
     case "save_user_settings":
       saveSettings(state);
       return state;
@@ -71,8 +69,42 @@ const settingsReducer = (
       return action.updatedSettings;
     case "restore_to_default_settings":
       return constructDefaultSettings(configFactory);
+    case "update_current_config_type":
+      return { ...state, currentWeightType: action.weightType };
     default:
       return state;
+  }
+};
+
+/**
+ * A helper function that returns the plate configuration based on the currentWeightType stored
+ * in the userSettings object.
+ * @param userSettings The CalculationSettings object that is used to determine the current plate configuration selected by the user.
+ */
+export const getCurrentPlateTypeConfig = (
+  userSettings: CalculationSettings
+): DefaultPlateConfig => {
+  switch (userSettings.currentWeightType) {
+    case WeightConversions.Kilograms:
+      return userSettings.kgConfig;
+    case WeightConversions.Pounds:
+      return userSettings.lbConfig;
+  }
+};
+
+/**
+ * A helper function to construct a new state with an updated plate configuration object.
+ */
+const getUpdatedPlateConfig = (
+  currState: CalculationSettings,
+  newPlateConfig: PlateConfig
+) => {
+  // Determine which type of config needs to be updated.
+  switch (newPlateConfig.conversionType) {
+    case WeightConversions.Pounds:
+      return { ...currState, lbConfig: newPlateConfig as DefaultPlateConfig };
+    default:
+      return { ...currState, kgConfig: newPlateConfig as DefaultPlateConfig };
   }
 };
 
@@ -117,10 +149,9 @@ const getSettingsPersistent = async (): Promise<CalculationSettings> => {
 
   if (storedSettings != null) {
     const parsedSettings: CalculationSettings = JSON.parse(storedSettings);
-    // Properties for the plate config in the storage needs to be re-initialized.
-    parsedSettings.plateConfig = new DefaultPlateConfig(
-      parsedSettings.plateConfig
-    );
+    // Properties for the plate configs in the storage needs to be re-initialized.
+    parsedSettings.lbConfig = new DefaultPlateConfig(parsedSettings.lbConfig);
+    parsedSettings.kgConfig = new DefaultPlateConfig(parsedSettings.kgConfig);
 
     return parsedSettings;
   }
@@ -135,11 +166,12 @@ const getSettingsPersistent = async (): Promise<CalculationSettings> => {
 const constructDefaultSettings = (
   configFactory: PlateConfigFactory
 ): CalculationSettings => {
-  const kbConfig = configFactory.getDefaultConfig(WeightConversions.Kilograms);
+  const kgConfig = configFactory.getDefaultConfig(WeightConversions.Kilograms);
   const lbConfig = configFactory.getDefaultConfig(WeightConversions.Pounds);
-
   return {
-    plateConfig: lbConfig,
+    lbConfig,
+    kgConfig,
+    currentWeightType: WeightConversions.Pounds,
   };
 };
 

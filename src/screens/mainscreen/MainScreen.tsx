@@ -14,7 +14,9 @@ import PlateCalculation, {
 import {
   Context as SettingsContext,
   CalculationSettings,
+  getCurrentPlateTypeConfig,
 } from "../../context/SettingsContext";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const DismissKeyboard: FunctionComponent = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -41,12 +43,15 @@ const calculatePlates = (
 };
 
 const MainScreen = () => {
-  const { state: userSettings } = useContext(SettingsContext);
+  const { state } = useContext(SettingsContext);
   const [weight, setWeight] = useState(0.0);
-  let plates = calculatePlates(userSettings.plateConfig, weight);
+  const currConfig = getCurrentPlateTypeConfig(state);
+  let plates = calculatePlates(currConfig, weight);
   const handleChangeWeight = (currWeight: number) => {
     setWeight(currWeight);
   };
+
+  //AsyncStorage.clear();
 
   return (
     <DismissKeyboard>
