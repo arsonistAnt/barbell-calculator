@@ -1,7 +1,10 @@
 import React, { useContext } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import IncrementButton from "../../components/button/IncrementButton";
-import { Context as SettingsContext } from "../../context/SettingsContext";
+import {
+  Context as SettingsContext,
+  getCurrentPlateTypeConfig,
+} from "../../context/SettingsContext";
 import {
   PlateConfig,
   DefaultPlateConfig,
@@ -25,12 +28,10 @@ const getIncrementalValue = (type: WeightConversions): number => {
 
 const BarWeightComponent: React.FunctionComponent = () => {
   const settingsState = useContext(SettingsContext);
-  const {
-    state: { plateConfig },
-    dispatch,
-  } = settingsState;
-  const currBarWeight = plateConfig.barbellWeight;
-  const incrementalVal = getIncrementalValue(plateConfig.conversionType);
+  const { state, dispatch } = settingsState;
+  const currentConfig = getCurrentPlateTypeConfig(state);
+  const currBarWeight = currentConfig.barbellWeight;
+  const incrementalVal = getIncrementalValue(currentConfig.conversionType);
 
   return (
     <>
@@ -43,8 +44,8 @@ const BarWeightComponent: React.FunctionComponent = () => {
             dispatch({
               type: "update_plate_config",
               newPlateConfig: {
-                ...plateConfig,
-                barbellWeight: plateConfig.barbellWeight + incrementalVal,
+                ...currentConfig,
+                barbellWeight: currentConfig.barbellWeight + incrementalVal,
               } as DefaultPlateConfig,
             })
           }
@@ -52,8 +53,9 @@ const BarWeightComponent: React.FunctionComponent = () => {
             dispatch({
               type: "update_plate_config",
               newPlateConfig: {
-                ...plateConfig,
-                barbellWeight: plateConfig.barbellWeight + incrementalVal * -1,
+                ...currentConfig,
+                barbellWeight:
+                  currentConfig.barbellWeight + incrementalVal * -1,
               } as DefaultPlateConfig,
             })
           }
