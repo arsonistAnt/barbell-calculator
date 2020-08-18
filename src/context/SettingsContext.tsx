@@ -5,6 +5,8 @@ import {
   Plate,
   DefaultPlateConfig,
   PlateConfig,
+  PlateConfigFactory,
+  WeightConversions,
 } from "../utils/PlateCalculation";
 
 /**
@@ -30,12 +32,14 @@ type SettingStorageAction =
   | { type: "restore_to_default_settings" }
   | { type: "update_user_settings"; updatedSettings: CalculationSettings };
 
+type SettingActionTypes = PlateConfigAction | SettingStorageAction;
+
 /**
  * Interface that describes the types of data that will be in the settings provider.
  */
 interface SettingsContextProp {
   state: CalculationSettings;
-  dispatch: React.Dispatch<PlateConfigAction | SettingStorageAction>;
+  dispatch: React.Dispatch<SettingActionTypes>;
 }
 
 /**
@@ -46,24 +50,27 @@ interface SettingsContextProp {
  */
 const settingsReducer = (
   state: CalculationSettings,
-  action: PlateConfigAction | SettingStorageAction
-) => {
+  action: SettingActionTypes
+): CalculationSettings => {
   switch (action.type) {
     case "update_plate_config":
-      return { ...state, plateConfig: action.newPlateConfig };
+      return {
+        ...state,
+        plateConfig: action.newPlateConfig as DefaultPlateConfig,
+      };
     case "update_plate_amount":
       const newConfig = updateConfigPlateAmount(
         state.plateConfig,
         action.newPlate
       );
-      return { ...state, plateConfig: newConfig };
+      return { ...state, plateConfig: newConfig as DefaultPlateConfig };
     case "save_user_settings":
       saveSettings(state);
       return state;
     case "update_user_settings":
       return action.updatedSettings;
     case "restore_to_default_settings":
-      return constructDefaultSettings();
+      return constructDefaultSettings(configFactory);
     default:
       return state;
   }
@@ -101,7 +108,9 @@ const saveSettings = async (currSettings: CalculationSettings) => {
 };
 
 /**
+ * Asynchronously fetch user settings from the storage.
  *
+ * @return a Promise of type CalculationSettings.
  */
 const getSettingsPersistent = async (): Promise<CalculationSettings> => {
   const storedSettings = await AsynStorage.getItem(StorageKeys.UserSettings);
@@ -115,7 +124,7 @@ const getSettingsPersistent = async (): Promise<CalculationSettings> => {
 
     return parsedSettings;
   }
-  return constructDefaultSettings();
+  return constructDefaultSettings(configFactory);
 };
 
 /**
@@ -123,14 +132,19 @@ const getSettingsPersistent = async (): Promise<CalculationSettings> => {
  *
  * @returns A CalculationSettings object.
  */
-const constructDefaultSettings = (): CalculationSettings => {
-  const newPlateConfig = new DefaultPlateConfig();
+const constructDefaultSettings = (
+  configFactory: PlateConfigFactory
+): CalculationSettings => {
+  const kbConfig = configFactory.getDefaultConfig(WeightConversions.Kilograms);
+  const lbConfig = configFactory.getDefaultConfig(WeightConversions.Pounds);
 
   return {
-    plateConfig: newPlateConfig,
+    plateConfig: lbConfig,
   };
 };
 
+// Create plate config factory
+const configFactory = new PlateConfigFactory();
 // Setup for the settings provider
 const defaultSettings = {} as SettingsContextProp;
 const Context = createContext(defaultSettings);
@@ -143,7 +157,7 @@ const SettingsProvider: React.FunctionComponent = ({ children }) => {
   // Create the default settings state and setup the reducer.
   const [state, dispatch] = useReducer(
     settingsReducer,
-    constructDefaultSettings()
+    constructDefaultSettings(configFactory)
   );
   // Run when user first launches app.
   useEffect(() => {

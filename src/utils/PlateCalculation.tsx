@@ -77,6 +77,44 @@ class StandardPlate {
 }
 
 /**
+ * Factory class for producing DefaultPlateConfig objects.
+ */
+export class PlateConfigFactory {
+  /**
+   * Produces the DefaultPlateConfig based on the weight type given.
+   * @param weightType the weight type for the conversion.
+   */
+  getDefaultConfig(weightType: WeightConversions): DefaultPlateConfig {
+    switch (weightType) {
+      case WeightConversions.Pounds:
+        return this.getLbDefault();
+      case WeightConversions.Kilograms:
+        return this.getKbDefault();
+      default:
+        return new DefaultPlateConfig();
+    }
+  }
+
+  private getKbDefault(): DefaultPlateConfig {
+    const kbConfig = new DefaultPlateConfig();
+    kbConfig.barbellWeight = 20; // kg weight
+    kbConfig.conversionType = WeightConversions.Kilograms;
+    kbConfig.standardPlates = StandardPlate.createStandardKb();
+    kbConfig.selectedPlates = DefaultPlateConfig.createStandardSelectionKB();
+    return kbConfig;
+  }
+
+  private getLbDefault(): DefaultPlateConfig {
+    const lbConfig = new DefaultPlateConfig();
+    lbConfig.barbellWeight = 45; // lb weight
+    lbConfig.conversionType = WeightConversions.Pounds;
+    lbConfig.standardPlates = StandardPlate.createStandardLB();
+    lbConfig.selectedPlates = DefaultPlateConfig.createStandardSelectionLB();
+    return lbConfig;
+  }
+}
+
+/**
  * Creates a set of default standard plates to calculate with.
  *
  * * Example of standard plate types are (in lbs):
