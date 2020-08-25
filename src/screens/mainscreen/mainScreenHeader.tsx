@@ -1,5 +1,5 @@
-import React, { useState, FunctionComponent } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import React, { useState, FunctionComponent } from "react";
+import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 
 type Props = {
   handleChangeWeight: (currWeight: number) => void;
@@ -10,13 +10,9 @@ const Header: FunctionComponent<Props> = ({
   handleChangeWeight,
   weight: number,
 }) => {
-  const [text, setText] = useState('');
-  // const [selection, setSelection] = useState({ start: 0, end: 0 });
-
+  const [text, setText] = useState("");
   const validations = (text: string) => {
-    //let onSubmitRegExpression = /^[0-9]+(\.[0-9]{1,1})?$/gim; all numbers no decimals
     let numRegExpression = /^(\d*(\.\d{0,2})?|\.?\d{1,2})$/gim; // 2 decimal places and numbers
-
     if (numRegExpression.test(text)) {
       setText(text);
     }
@@ -27,16 +23,6 @@ const Header: FunctionComponent<Props> = ({
       <View>
         <Text style={styles.targetText}>Target Weight</Text>
         <TextInput
-          // selection={selection}
-          // multiline={true}
-          // onSelectionChange={(event) => {
-          //   const {
-          //     nativeEvent: {
-          //       selection: { start, end },
-          //     },
-          //   } = event;
-          //   setSelection({ start, end });
-          // }}
           returnKeyLabel="Done"
           returnKeyType="done"
           keyboardType="decimal-pad"
@@ -57,20 +43,20 @@ const Header: FunctionComponent<Props> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '30%',
-    backgroundColor: '#CC2B25',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    height: "30%",
+    backgroundColor: "#CC2B25",
+    alignItems: "center",
+    justifyContent: "center",
   },
   targetText: {
-    color: 'black',
+    color: "black",
     fontSize: 20,
   },
   weightText: {
     fontSize: 30,
-    color: 'white',
-    alignSelf: 'center',
+    color: "white",
+    alignSelf: "center",
     paddingTop: 10,
   },
 });
