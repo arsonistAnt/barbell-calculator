@@ -4,9 +4,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainScreen from "./src/screens/mainscreen/MainScreen";
 import SettingScreen from "./src/screens/settingscreen/SettingScreen";
-
+import { Provider as PaperProvider } from "react-native-paper";
 import { SettingsProvider } from "./src/context/SettingsContext";
 import { AntDesign } from "@expo/vector-icons";
+import MainTheme from "./src/themes/MainTheme";
 
 const BottomTabNavigator = createBottomTabNavigator();
 
@@ -67,7 +68,9 @@ function Tabs() {
 export default function App() {
   return (
     <SettingsProvider>
-      <Tabs />
+      <PaperProvider theme={MainTheme}>
+        <Tabs />
+      </PaperProvider>
     </SettingsProvider>
   );
 }

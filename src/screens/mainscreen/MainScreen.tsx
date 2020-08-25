@@ -16,7 +16,7 @@ import {
   CalculationSettings,
   getCurrentPlateTypeConfig,
 } from "../../context/SettingsContext";
-import AsyncStorage from "@react-native-community/async-storage";
+import { useTheme } from "react-native-paper";
 
 const DismissKeyboard: FunctionComponent = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -43,6 +43,7 @@ const calculatePlates = (
 };
 
 const MainScreen = () => {
+  const { colors } = useTheme();
   const { state } = useContext(SettingsContext);
   const [weight, setWeight] = useState(0.0);
   const currConfig = getCurrentPlateTypeConfig(state);
@@ -55,7 +56,7 @@ const MainScreen = () => {
 
   return (
     <DismissKeyboard>
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Header handleChangeWeight={handleChangeWeight} weight={weight} />
         <Body calculatedPlates={plates} />
       </View>
