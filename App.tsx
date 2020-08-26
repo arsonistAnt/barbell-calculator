@@ -7,7 +7,7 @@ import SettingScreen from "./src/screens/settingscreen/SettingScreen";
 import { Provider as PaperProvider } from "react-native-paper";
 import { SettingsProvider } from "./src/context/SettingsContext";
 import { AntDesign } from "@expo/vector-icons";
-import MainTheme from "./src/themes/MainTheme";
+import MainTheme, { loadFonts } from "./src/themes/MainTheme";
 
 const BottomTabNavigator = createBottomTabNavigator();
 
@@ -66,9 +66,11 @@ function Tabs() {
 }
 
 export default function App() {
+  // Load custom fonts into main theme.
+  const theme = { ...MainTheme, fonts: loadFonts() };
   return (
     <SettingsProvider>
-      <PaperProvider theme={MainTheme}>
+      <PaperProvider theme={theme}>
         <Tabs />
       </PaperProvider>
     </SettingsProvider>

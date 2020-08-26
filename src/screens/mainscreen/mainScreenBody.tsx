@@ -1,7 +1,10 @@
 import React, { FunctionComponent } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
+import { useTheme } from "react-native-paper";
 
 const Body: FunctionComponent = ({ calculatedPlates }) => {
+  // Retrieve the styles with the current theme of the application.
+  const styles = stylesWithTheme(useTheme());
   const isLeftoverWeight = () => {
     if (
       calculatedPlates.leftoverWeight < 0 ||
@@ -45,20 +48,25 @@ const Body: FunctionComponent = ({ calculatedPlates }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    paddingTop: 50,
-  },
-  weightText: {
-    fontSize: 25,
-    color: "white",
-  },
-  remainingText: {
-    fontSize: 25,
-    color: "white",
-    paddingTop: 100,
-  },
-});
+const stylesWithTheme = (theme: ReactNativePaper.Theme) => {
+  const { fonts, colors } = theme;
+  return StyleSheet.create({
+    container: {
+      alignItems: "center",
+      paddingTop: 50,
+    },
+    weightText: {
+      ...fonts.light,
+      fontSize: 25,
+      color: "white",
+    },
+    remainingText: {
+      ...fonts.regular,
+      fontSize: 25,
+      color: "white",
+      paddingTop: 100,
+    },
+  });
+};
 
 export default Body;
