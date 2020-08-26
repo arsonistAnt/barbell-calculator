@@ -43,7 +43,7 @@ const calculatePlates = (
 };
 
 const MainScreen = () => {
-  const { colors } = useTheme();
+  const { colors, fonts } = useTheme();
   const { state } = useContext(SettingsContext);
   const [weight, setWeight] = useState(0.0);
   const currConfig = getCurrentPlateTypeConfig(state);
@@ -51,9 +51,6 @@ const MainScreen = () => {
   const handleChangeWeight = (currWeight: number) => {
     setWeight(currWeight);
   };
-
-  //AsyncStorage.clear();
-
   return (
     <DismissKeyboard>
       <View style={[styles.container, { backgroundColor: colors.background }]}>
