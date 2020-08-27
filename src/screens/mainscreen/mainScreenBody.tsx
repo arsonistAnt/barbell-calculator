@@ -1,49 +1,51 @@
-import React, { FunctionComponent } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
-import { useTheme } from "react-native-paper";
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
-const Body: FunctionComponent = ({ calculatedPlates }) => {
-  // Retrieve the styles with the current theme of the application.
+/**
+ * Displays leftoverweight
+ * @param leftoverWeight The remainder weight from calculatedPlates.
+ */
+const displayLeftOverWeight = (leftoverWeight: number) => {
   const styles = stylesWithTheme(useTheme());
-  const isLeftoverWeight = () => {
-    if (
-      calculatedPlates.leftoverWeight < 0 ||
-      isNaN(calculatedPlates.leftoverWeight)
-    ) {
-      return false;
-    } else if (calculatedPlates.leftoverWeight >= 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  if (leftoverWeight >= 0) {
+    return (
+      <Text style={styles.remainingText}>Remaining: {leftoverWeight}</Text>
+    );
+  } else {
+    return <Text style={styles.remainingText}>Not Rackable</Text>;
+  }
+};
 
+/**
+ * Displays plates
+ * @param plates The plates from calculatedPlates.
+ * //TODO:- Display KG after finishing UI
+ */
+const displayPlates = (plates: Array<any>) => {
+  return plates === undefined ? (
+    <Text></Text>
+  ) : (
+    plates.map((item, index) => (
+      <Text key={index}>
+        {item.amount +
+          ' x ' +
+          item.type +
+          ' => ' +
+          item.amount * item.type +
+          ' \n'}
+      </Text>
+    ))
+  );
+};
+
+const Body: React.FC<any> = ({ calculatedPlates }) => {
+  const { leftoverWeight, plates } = calculatedPlates;
+  const styles = stylesWithTheme(useTheme());
   return (
     <View style={styles.container}>
-      <Text style={styles.weightText}>
-        {calculatedPlates.plates === undefined ? (
-          <Text></Text>
-        ) : (
-          calculatedPlates.plates.map((item, index) => (
-            <Text key={index}>
-              {item.amount +
-                " x " +
-                item.type +
-                " => " +
-                item.amount * item.type +
-                "LB\n"}
-            </Text>
-          ))
-        )}
-      </Text>
-
-      {!isLeftoverWeight() ? (
-        <Text style={styles.remainingText}>Not Rackable</Text>
-      ) : (
-        <Text style={styles.remainingText}>
-          Remaining: {calculatedPlates.leftoverWeight}
-        </Text>
-      )}
+      <Text style={styles.weightText}>{displayPlates(plates)}</Text>
+      {displayLeftOverWeight(leftoverWeight)}
     </View>
   );
 };
@@ -52,18 +54,18 @@ const stylesWithTheme = (theme: ReactNativePaper.Theme) => {
   const { fonts, colors } = theme;
   return StyleSheet.create({
     container: {
-      alignItems: "center",
+      alignItems: 'center',
       paddingTop: 50,
     },
     weightText: {
       ...fonts.light,
       fontSize: 25,
-      color: "white",
+      color: 'white',
     },
     remainingText: {
       ...fonts.regular,
       fontSize: 25,
-      color: "white",
+      color: 'white',
       paddingTop: 100,
     },
   });
