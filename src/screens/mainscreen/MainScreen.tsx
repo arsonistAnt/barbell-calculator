@@ -1,27 +1,32 @@
-import React, { useState, useContext, FunctionComponent } from 'react';
+import React, { useState, useContext, FunctionComponent } from "react";
 import {
   StyleSheet,
   View,
   Keyboard,
   TouchableWithoutFeedback,
-} from 'react-native';
-import Header from './mainScreenHeader';
-import Body from './mainScreenBody';
+} from "react-native";
+import Header from "./mainScreenHeader";
+import Body from "./mainScreenBody";
 import PlateCalculation, {
   Plate,
   DefaultPlateConfig,
-} from '../../utils/PlateCalculation';
+} from "../../utils/PlateCalculation";
 import {
   Context as SettingsContext,
   getCurrentPlateTypeConfig,
-} from '../../context/SettingsContext';
-import { useTheme } from 'react-native-paper';
+} from "../../context/SettingsContext";
+import { useTheme, Appbar } from "react-native-paper";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const DismissKeyboard: FunctionComponent = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     {children}
   </TouchableWithoutFeedback>
 );
+
+type Props = {
+  navigation: StackNavigationProp<any, any>;
+};
 
 /**
  * Use the plate configuration in the user settings to calculate the list of plates.
@@ -41,7 +46,27 @@ const calculatePlates = (
   return plates;
 };
 
-const MainScreen = () => {
+/**
+ * Create the app bar header component for the main screen.
+ */
+const MainScreenAppBar: React.FC<Props> = ({ navigation }) => {
+  // Get the apptitle and title size from the theme prop.
+  const { appTitle, mainTitleSize } = useTheme();
+  return (
+    <Appbar.Header style={{ elevation: 0 }}>
+      <Appbar.Content
+        title={appTitle}
+        titleStyle={{ fontSize: mainTitleSize }}
+      />
+      <Appbar.Action
+        icon="ios-settings"
+        onPress={() => navigation.navigate("Settings")}
+      />
+    </Appbar.Header>
+  );
+};
+
+const MainScreen: React.FC<Props> = ({ navigation }) => {
   const { colors, fonts } = useTheme();
   const { state } = useContext(SettingsContext);
   const [weight, setWeight] = useState(0.0);
@@ -53,6 +78,7 @@ const MainScreen = () => {
   return (
     <DismissKeyboard>
       <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <MainScreenAppBar navigation={navigation} />
         <Header
           placerHolderDefault={currConfig.conversionType}
           handleChangeWeight={handleChangeWeight}
@@ -67,7 +93,7 @@ const MainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#171717',
+    backgroundColor: "#171717",
   },
 });
 
