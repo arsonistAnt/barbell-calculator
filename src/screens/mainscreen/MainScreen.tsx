@@ -1,22 +1,21 @@
-import React, { useState, useContext, FunctionComponent } from "react";
+import React, { useState, useContext, FunctionComponent } from 'react';
 import {
   StyleSheet,
   View,
   Keyboard,
   TouchableWithoutFeedback,
-} from "react-native";
-import Header from "./mainScreenHeader";
-import Body from "./mainScreenBody";
+} from 'react-native';
+import Header from './mainScreenHeader';
+import Body from './mainScreenBody';
 import PlateCalculation, {
   Plate,
   DefaultPlateConfig,
-} from "../../utils/PlateCalculation";
+} from '../../utils/PlateCalculation';
 import {
   Context as SettingsContext,
-  CalculationSettings,
   getCurrentPlateTypeConfig,
-} from "../../context/SettingsContext";
-import { useTheme } from "react-native-paper";
+} from '../../context/SettingsContext';
+import { useTheme } from 'react-native-paper';
 
 const DismissKeyboard: FunctionComponent = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -54,7 +53,11 @@ const MainScreen = () => {
   return (
     <DismissKeyboard>
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Header handleChangeWeight={handleChangeWeight} weight={weight} />
+        <Header
+          placerHolderDefault={currConfig.conversionType}
+          handleChangeWeight={handleChangeWeight}
+          weight={weight}
+        />
         <Body calculatedPlates={plates} />
       </View>
     </DismissKeyboard>
@@ -64,7 +67,7 @@ const MainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#171717",
+    backgroundColor: '#171717',
   },
 });
 
