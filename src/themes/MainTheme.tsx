@@ -20,8 +20,6 @@ export const loadFonts = (): Fonts => {
     Oxygen_700Bold,
   });
   if (!loadedFonts) {
-    console.log("NULL!");
-    console.log(loadedFonts);
     return fonts;
   } else {
     const defaultFontConfig = {
@@ -59,6 +57,16 @@ const predefinedColors = {
 };
 const { darkPurple, lightPurple } = predefinedColors;
 
+// Create custom props for the main theme, this way must be created to comply with typescript.
+declare global {
+  namespace ReactNativePaper {
+    interface Theme {
+      appTitle: String;
+      mainTitleSize: number;
+    }
+  }
+}
+
 // The main theme object that will be used in the app global. All the properties
 // in this object will be used to set the styles of the components
 export default {
@@ -70,4 +78,6 @@ export default {
     text: "white",
     background: lightPurple,
   },
+  appTitle: "Plate Calculator",
+  mainTitleSize: 28,
 };

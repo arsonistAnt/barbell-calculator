@@ -6,6 +6,7 @@ import {
   SectionList,
   Text,
   TouchableHighlight,
+  Platform,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import {
@@ -22,6 +23,7 @@ import {
   getCurrentPlateTypeConfig,
 } from "../../context/SettingsContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useTheme, Appbar } from "react-native-paper";
 
 type Props = {
   navigation: StackNavigationProp<any, any>;
@@ -39,6 +41,37 @@ const resetComponent: FunctionComponent = () => {
     >
       <Text style={styles.itemText}>Reset to default...</Text>
     </TouchableOpacity>
+  );
+};
+
+/**
+ * Create the app bar header component for the settings screen.
+ */
+const SettingsScreenAppBar: React.FC<Props> = ({ navigation }) => {
+  // Get the apptitle and title size from the theme prop.
+  const { colors } = useTheme();
+  const iosFontSize = Platform.OS == "ios" ? { fontSize: 20 } : {};
+  const onNavigateBackPressed = () => {
+    navigation.navigate("Plate Calculator");
+  };
+  const BackActionIos = () => (
+    <Appbar.Action
+      icon="ios-arrow-back"
+      color="white"
+      size={20}
+      onPress={onNavigateBackPressed}
+      style={{ justifyContent: "flex-end" }}
+    />
+  );
+  return (
+    <Appbar.Header style={{ backgroundColor: colors.accent }}>
+      {Platform.OS == "ios" ? (
+        <BackActionIos />
+      ) : (
+        <Appbar.BackAction onPress={onNavigateBackPressed} />
+      )}
+      <Appbar.Content title={"Settings"} titleStyle={{ ...iosFontSize }} />
+    </Appbar.Header>
   );
 };
 
@@ -98,6 +131,7 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <>
       <SafeAreaView style={styles.container}>
+        <SettingsScreenAppBar navigation={navigation} />
         <View style={{ marginTop: 10 }}>
           <SectionList
             sections={[
