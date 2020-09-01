@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, FunctionComponent } from "react";
+import React, { useContext, useEffect, FunctionComponent } from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -7,23 +7,24 @@ import {
   Text,
   TouchableHighlight,
   Platform,
-} from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
+  Alert,
+} from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import {
   OptionsList,
   OptionItem,
-} from "../../components/optionlist/OptionList";
-import { Plate, DefaultPlateConfig } from "../../utils/PlateCalculation";
-import { PlateList } from "../../components/platelist/PlateList";
-import BarWeightComponent from "./BarWeightComponent";
-import ConversionsComponent from "./ConversionsComponent";
-import LimitedPlatesComponent from "./LimitedPlatesSwitch";
+} from '../../components/optionlist/OptionList';
+import { Plate, DefaultPlateConfig } from '../../utils/PlateCalculation';
+import { PlateList } from '../../components/platelist/PlateList';
+import BarWeightComponent from './BarWeightComponent';
+import ConversionsComponent from './ConversionsComponent';
+import LimitedPlatesComponent from './LimitedPlatesSwitch';
 import {
   Context as SettingsContext,
   getCurrentPlateTypeConfig,
-} from "../../context/SettingsContext";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { useTheme, Appbar } from "react-native-paper";
+} from '../../context/SettingsContext';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useTheme, Appbar } from 'react-native-paper';
 
 type Props = {
   navigation: StackNavigationProp<any, any>;
@@ -34,12 +35,27 @@ const resetComponent: FunctionComponent = () => {
   const { dispatch } = settingsState;
   return (
     <TouchableOpacity
-      style={{ alignSelf: "flex-start" }}
+      style={{ alignSelf: 'flex-start' }}
       onPress={() => {
-        dispatch({ type: "restore_to_default_settings" });
+        Alert.alert(
+          'Default Plates',
+          'Do you really want to reset?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {
+              text: 'OK',
+              onPress: () => dispatch({ type: 'restore_to_default_settings' }),
+            },
+          ],
+          { cancelable: true }
+        );
       }}
     >
-      <Text style={styles.itemText}>Reset to default...</Text>
+      <Text style={styles.itemText}>Reset to default</Text>
     </TouchableOpacity>
   );
 };
@@ -50,9 +66,9 @@ const resetComponent: FunctionComponent = () => {
 const SettingsScreenAppBar: React.FC<Props> = ({ navigation }) => {
   // Get the apptitle and title size from the theme prop.
   const { colors } = useTheme();
-  const iosFontSize = Platform.OS == "ios" ? { fontSize: 20 } : {};
+  const iosFontSize = Platform.OS == 'ios' ? { fontSize: 20 } : {};
   const onNavigateBackPressed = () => {
-    navigation.navigate("Plate Calculator");
+    navigation.navigate('Plate Calculator');
   };
   const BackActionIos = () => (
     <Appbar.Action
@@ -60,17 +76,17 @@ const SettingsScreenAppBar: React.FC<Props> = ({ navigation }) => {
       color="white"
       size={20}
       onPress={onNavigateBackPressed}
-      style={{ justifyContent: "flex-end" }}
+      style={{ justifyContent: 'flex-end' }}
     />
   );
   return (
     <Appbar.Header style={{ backgroundColor: colors.accent }}>
-      {Platform.OS == "ios" ? (
+      {Platform.OS == 'ios' ? (
         <BackActionIos />
       ) : (
         <Appbar.BackAction onPress={onNavigateBackPressed} />
       )}
-      <Appbar.Content title={"Settings"} titleStyle={{ ...iosFontSize }} />
+      <Appbar.Content title={'Settings'} titleStyle={{ ...iosFontSize }} />
     </Appbar.Header>
   );
 };
@@ -79,17 +95,17 @@ const SettingsScreenAppBar: React.FC<Props> = ({ navigation }) => {
 const optionItems: Array<OptionItem> = [
   {
     id: 0,
-    optionLabel: "Unit",
+    optionLabel: 'Unit',
     itemComponent: ConversionsComponent,
   },
   {
     id: 1,
-    optionLabel: "Bar weight",
+    optionLabel: 'Bar weight',
     itemComponent: BarWeightComponent,
   },
   {
     id: 3,
-    optionLabel: "Limited number of plates",
+    optionLabel: 'Limited number of plates',
     itemComponent: LimitedPlatesComponent,
   },
   {
@@ -111,7 +127,7 @@ const setupAutoSave = (
 ) => {
   // Save settings when navigating away from settings screen.
   useEffect(() => {
-    const unsubscribeListener: any = navigation.addListener("blur", () => {
+    const unsubscribeListener: any = navigation.addListener('blur', () => {
       action?.();
       return unsubscribeListener;
     });
@@ -125,7 +141,7 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
   const plateConfig = getCurrentPlateTypeConfig(state);
   // Auto save when user navigates away from settings screen.
   setupAutoSave(navigation, () => {
-    dispatch({ type: "save_user_settings" });
+    dispatch({ type: 'save_user_settings' });
   });
 
   return (
@@ -136,8 +152,8 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
           <SectionList
             sections={[
               {
-                title: "",
-                data: [""],
+                title: '',
+                data: [''],
                 renderItem: () => (
                   <TouchableHighlight>
                     <OptionsList optionItemList={optionItems} />
@@ -145,8 +161,8 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
                 ),
               },
               {
-                title: "",
-                data: [""],
+                title: '',
+                data: [''],
                 renderItem: () => (
                   <TouchableHighlight>
                     <PlateList
@@ -157,7 +173,7 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
                         selectedPlates: Set<number>
                       ) => {
                         dispatch({
-                          type: "update_plate_config",
+                          type: 'update_plate_config',
                           newPlateConfig: {
                             ...plateConfig,
                             selectedPlates,
@@ -167,7 +183,7 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
                       onIncrementUpdate={(plate: Plate, amount: number) => {
                         plate.amount = amount;
                         dispatch({
-                          type: "update_plate_amount",
+                          type: 'update_plate_amount',
                           newPlate: plate,
                         });
                       }}
@@ -190,12 +206,12 @@ const SettingScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
+    flexDirection: 'column',
     flex: 1,
-    backgroundColor: "#171717",
+    backgroundColor: '#171717',
   },
   itemText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 20,
   },
 });
