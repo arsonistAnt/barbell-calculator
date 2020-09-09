@@ -60,6 +60,9 @@ const { darkPurple, lightPurple } = predefinedColors;
 // Create custom props for the main theme, this way must be created to comply with typescript.
 declare global {
   namespace ReactNativePaper {
+    interface ThemeColors {
+      borderColor: string;
+    }
     interface Theme {
       appTitle: String;
       mainTitleSize: number;
@@ -77,6 +80,7 @@ export default {
     accent: lightPurple,
     text: "white",
     background: lightPurple,
+    borderColor: "#1D203E",
   },
   appTitle: "Plate Calculator",
   mainTitleSize: 28,

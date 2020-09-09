@@ -1,71 +1,45 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useTheme } from "react-native-paper";
+import PlateResultTable from "./plateResultTable";
 
 /**
- * Displays leftoverweight
- * @param leftoverWeight The remainder weight from calculatedPlates.
+ * The body component for the main screen, displays the plate results in a table.
  */
-const displayLeftOverWeight = (leftoverWeight: number) => {
-  const styles = stylesWithTheme(useTheme());
-  if (leftoverWeight >= 0) {
-    return (
-      <Text style={styles.remainingText}>Remaining: {leftoverWeight}</Text>
-    );
-  } else {
-    return <Text style={styles.remainingText}>Not Rackable</Text>;
-  }
-};
-
-/**
- * Displays plates
- * @param plates The plates from calculatedPlates.
- * //TODO:- Display KG after finishing UI
- */
-const displayPlates = (plates: Array<any>) => {
-  return plates === undefined ? (
-    <Text></Text>
-  ) : (
-    plates.map((item, index) => (
-      <Text key={index}>
-        {item.amount +
-          ' x ' +
-          item.type +
-          ' => ' +
-          item.amount * item.type +
-          ' \n'}
-      </Text>
-    ))
-  );
-};
-
 const Body: React.FC<any> = ({ calculatedPlates }) => {
   const { leftoverWeight, plates } = calculatedPlates;
-  const styles = stylesWithTheme(useTheme());
+  const appTheme = useTheme();
+  const styles = stylesWithTheme(appTheme);
   return (
     <View style={styles.container}>
-      <Text style={styles.weightText}>{displayPlates(plates)}</Text>
-      {displayLeftOverWeight(leftoverWeight)}
+      <PlateResultTable plates={plates} appTheme={appTheme} />
     </View>
   );
 };
 
+/**
+ * Creates the style for the main body component utilizing the react native paper theme.
+ *
+ * @param theme the theme from react native paper.
+ */
 const stylesWithTheme = (theme: ReactNativePaper.Theme) => {
   const { fonts, colors } = theme;
   return StyleSheet.create({
     container: {
-      alignItems: 'center',
-      paddingTop: 50,
+      flex: 1,
+      backgroundColor: colors.primary,
+      paddingHorizontal: 16,
+      paddingBottom: 16,
     },
     weightText: {
       ...fonts.light,
       fontSize: 25,
-      color: 'white',
+      color: "white",
     },
     remainingText: {
       ...fonts.regular,
       fontSize: 25,
-      color: 'white',
+      color: "white",
       paddingTop: 100,
     },
   });
